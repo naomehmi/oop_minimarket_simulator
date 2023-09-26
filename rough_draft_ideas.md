@@ -6,9 +6,8 @@
 - memperbanyak jenis produk yang dijual pas level up
 - pakai system day gitu (kek day 1, day 2, day 3, dll) main, biar unlimited terus mainnya sampe quit. Jadi sebelum 1 day mulai, karyawan/player bisa 
 - ada tutorial dari si pemilik minimarket
-- minigame?? (kek tarok diskon gt)
 - buang produk yang udah expired
-- mau pakek sistem save file gitu keknya tp emcai sih
+- gameplay nya diinspirasi dari 'supermarket cashier', coba kelen tes install di playstore AWKWKKW
 
 ## classes
 
@@ -17,9 +16,10 @@
         - productCode (self generated?? mau dibuat private kah idk) _string_
         - productName (e.g. "Apple") _string_
         - productPrice (harga) _integer_
+        - productUOM (satuan unit, kek misal pcs/ltr/mtr/dll) _string_
         - productCondition (bagus/rusak) _string_
     - Method = -
-    - SubClass:
+    - SubClass (ni nnt M02 ada belajar ttg inheritance gitu):
         1. **consumable** (produk yang bisa kadaluarsa cth: buah-buahan)
             - Property:
                 - productExpDate (tgl kadaluarsa) _string_
@@ -35,6 +35,7 @@
         - `fillCart()`
             - randomized
             - diisi produk yg ada di minimarketnya di dalam cart nya
+            - keknya bakal susah si coding ini T-T
         - `pay()`
             - bayar ke kasir
 3. ***Employee*** (si player)
@@ -55,13 +56,19 @@
             - gimana ya scan produk, blm tau
 4. ***Minimarket***
     - Property
-        - emcai lagi capek
+        - minimarketMoney (total uang si player utk restock uang/level minimarket, klo udh 0 atau minus game over mungkin)
+        - minimarketTutorial _bool_ (klo true ada dialog tambahan utk tutorial, klo false ya gk ada)
 5. ***Stock*** (ini daftar semua produk gt)
     - Property
-        - listOfProducts _dict_ or maybe _2d list_
+        - listOfProducts _dict or maybe 2d list, blm tau soalnya ni cuman bacot2 dulu ide_
+        - stockMaxCapacity _int_ , qty maksimal restock 1 produk (biar user gak input terlalu byk)
     - Method
         - `showStock()`
             - tampil semua produk minimarket dalam sebuah tabel
+        - `restock()`
+            - sebelum mulai level, si player boleh cek stock. Klo barang gk ada stock nnt customernya mana bs belanja :V
+            - jadi misal produk apel sisa 2 pcs, jadi si player bisa memilih untuk restock apel sebyk 7 pcs
+            -  terus si player bisa buang produk yg udah exp atau rusak
 
 ## gameplay
 
@@ -69,7 +76,7 @@
     - play
     - quit
 - play
-    - starting money = 100.000
+    - starting money = $1000
     - user input nama mereka
         - bikin keyword yang tidak diperboleh (mis angka-angka gt)
         - maks 20 karakter
@@ -80,11 +87,27 @@
             - boleh pesan produk yang udah mau habis stock
             - klo level up bisa unlock produk baru yg dijual (harga lbh mahal ofc)
         - upgrade minimarket
-            - bisa tambah cafe di minimarket mungkin, jadi setelah shift selesai bisa dapat uang ekstra dari penghasilan cafe. Makin dilevel up cafe nya makin byk penghasilannya
-            - upgrade max capacity shelf gitu, jadi misal level 1 maks restock 1 produk itu 10 pcs. Level 2 maks 15 pcs, dst
+            - bisa tambah cafe di minimarket mungkin, jadi setelah shift selesai bisa dapat uang ekstra dari penghasilan cafe. Makin dilevel up cafe nya makin byk penghasilannya. soalnya kan minimarket/supermarket cth brastagi, ada cafe, giveaway la, dll.
+            - upgrade max capacity shelf gitu (class Stock), jadi misal level 1 maks restock 1 produk itu 10 pcs. Level 2 maks 15 pcs, dst
         - mulai shift
             - mulai dari day 1
-            - keknya setiap 10 hari level up gt
+            - keknya setiap 2-3 hari level up gt ?? atau mien pakek level ya bikin ribet aja AWKWKWKWK
             - customer datang, randomize isi cart nya
-            - baru bayar sm si player
-            - aduh prosesnya aku masi blm yakin gimn
+            - mungkin bisa bikin game simpel aja gitu
+                - mis customer udah mau bayar ini
+                - player boleh tekan `x` untuk scan barcode
+                - klo gk ada barcode, player mungkin bisa ketik harga secara manual, mirip game supermarket cashier di hpku AWKWKWK
+                - terus setelah semua barang discan, player tekan `t` untuk totalin semua harganya
+                - abis itu, customer bayar, random uangnya
+                - jadi kita harus kasi kembalian kek brp lbr uang 100, brp lbr uang 50, dll (keknya pakek dolar lebih mudah dibanding rupiah)
+                - abis itu klik `r` biar kasi struk untuk si customer ?? boi cai
+- mungkin sblm quit bisa liat progress player kek udah main sebrp lama, sisa uang, jlh customer yg udh dilayani, dsb
+- produk yg dijual
+    - apel => lvl 1
+    - susu => lvl 1
+    - telur => lvl 2
+    - tisu => lvl 3
+    - minyak goreng => lvl 5
+    - kursi kayu => lvl 6
+    - meja kayu => lvl 7
+    - beras => lvl 8
