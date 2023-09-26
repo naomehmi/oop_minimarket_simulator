@@ -43,8 +43,6 @@
     - Property
         - employeeCode (bikin private keknya) _string_
         - employeeName (nama si karyawan/player) _string_
-        - employeeDay (kek udah shift kebrp, stlh selesai setiap level +1)
-        - employeeLevel
     - Method
         - `restock()`
             - minigame gitu
