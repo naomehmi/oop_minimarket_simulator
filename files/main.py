@@ -1,11 +1,36 @@
 from minimarketClasses import product, consumable, nonConsumable, customer, employee, minimarket, stock
 from time import sleep
+from random import randrange
+import datetime
+
+def tutorialLevel():
+    sleep(0.3)
+    print(f"DAY {miniMarket.minimarketLevel} <TUTORIAL>")
+    print("="*5)
+    print()
+    print("1. Check Minimarket's Stock")
+    sleep(0.3)
+    print("2. Start shift")
+    sleep(0.3)
+    print("3. Resign")
+    print("Pick an option (1/2/3).")
+    print()
+    sleep(0.3)
+    print(f"=> Hello, {player.employeeName}. Welcome to your first shift.")
+    print("=> There are three choices for you to pick everyday. Let's go over them one by one.")
+    interact = None
+    print()
+    print("=> Try pressing '1' to check the minimarket's stock.")
+    while interact != "1":
+        interact = input("=> ")
+        if interact != "1":
+            print("=> Press '1'")
+    print()
+    stock.showStock(unlocked,player.employeeName,True)
 
 def mainMenu():
-    for i in range(75):
-        print("=",end="")
-        sleep(0.03)
-    print()
+    print("="*75)
+    sleep(0.03)
     print("|{:^73}|".format(" "))
     print("|{:^73}|".format("MINIMARKET SIMULATOR"))
     sleep(0.03)
@@ -43,9 +68,9 @@ def mainMenu():
     sleep(0.03)
     print("|{:^73}|".format(" "))
     sleep(0.03)
-    print("|{:^73}|".format("press 'p' to play"))
+    print("|{:^73}|".format("PRESS 'P' TO PLAY"))
     sleep(0.03)
-    print("|{:^73}|".format("press 'q' to quit"))
+    print("|{:^73}|".format("PRESS 'Q' TO QUIT"))
     sleep(0.03)
     print("|{:^73}|".format(" "))
     sleep(0.03)
@@ -66,5 +91,30 @@ def mainMenu():
         print()
     return interact
 menu = mainMenu()
+miniMarket = minimarket(1000, 3, 1, 1)
+stock = stock([[],[],[],[],[],[],[],[]],10)
+unlocked = 2
+for i in range(7):
+    stock.listofProducts[0].append(consumable("RA-759","APPLE",3.00,"PCS","GOOD",datetime.datetime(2023,12,1)))
+for i in range(10):
+    stock.listofProducts[1].append(nonConsumable("MK-011","MILK",3.00,"PCS","GOOD"))
 if menu == 'p':
-    pass
+    print("=> Welcome to Minimarket Simulator. In this game, you will be playing as an minimarket employee.")
+    print("=> Your tasks include: processing customer payments, restocking products, and managing the minimarket's finances.")
+    print("=> The game will be over if you get fired or quit your job. Are you ready?")
+    print()
+    sleep(5)
+    print("=> Before we start, what's your name?")
+    player = employee("EMPLOYEE"+str(randrange(1000,9999)),input("=> ").title())
+    print()
+    interact = None
+    print("=> Would you like to play our interactive tutorial? (Y/N)")
+    while interact != "y" and interact != "n":
+        interact = input("=> ").lower()
+        print()
+        if interact == "y":
+            tutorialLevel()
+        elif interact == "n":
+            break
+        else:
+            print("=> Press 'y' or 'n'")
