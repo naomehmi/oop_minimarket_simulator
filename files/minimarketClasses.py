@@ -28,8 +28,6 @@ class employee:
     def __init__(self, employeeCode, employeeName):
         self.employeeCode = employeeCode
         self.employeeName = employeeName
-    def restock(self):
-        pass
     def cashier(self):
         pass
 
