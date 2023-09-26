@@ -1,0 +1,70 @@
+from minimarketClasses import product, consumable, nonConsumable, customer, employee, minimarket, stock
+from time import sleep
+
+def mainMenu():
+    for i in range(75):
+        print("=",end="")
+        sleep(0.03)
+    print()
+    print("|{:^73}|".format(" "))
+    print("|{:^73}|".format("MINIMARKET SIMULATOR"))
+    sleep(0.03)
+    print("|{:^73}|".format("*"*20))
+    sleep(0.03)
+    print("|{:^73}|".format(" "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","  ________"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" "," /        \_____         __________"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","/__________\____|       |          |"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|    |  |  |            |  |  |    |"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|          |            |          |"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|    \__/  |            |  \__/    |"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|__________|            |__________|"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|        __|____        |          |"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|       |______|     ___|_____     |"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|    ______| |__   __||_____||__   |"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|    |          |  \_|_|_|_|_|_/   |"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|___ |__________|___\|_|_|_|_|/    |"," "))
+    sleep(0.03)
+    print("|{:^18}{:<36}{:^19}|".format(" ","|                             |    |"," "))
+    sleep(0.03)
+    print("|{:^73}|".format(" "))
+    sleep(0.03)
+    print("|{:^73}|".format(" "))
+    sleep(0.03)
+    print("|{:^73}|".format("press 'p' to play"))
+    sleep(0.03)
+    print("|{:^73}|".format("press 'q' to quit"))
+    sleep(0.03)
+    print("|{:^73}|".format(" "))
+    sleep(0.03)
+    print("="*75)
+    interact = None
+    while interact != 'p' and interact != 'q':
+        interact = input("=> ").lower()
+        if interact != 'p' and interact != 'q':
+            print("=> Press 'p' or 'q'")
+    if interact == 'p':
+        print()
+        print("{:^74}".format("Loading"))
+        print("{:^22}".format(" "),end="")
+        for i in range(30):
+            print("∎",end="")
+            sleep(0.02)
+        print()
+        print()
+    return interact
+menu = mainMenu()
+if menu == 'p':
+    pass
