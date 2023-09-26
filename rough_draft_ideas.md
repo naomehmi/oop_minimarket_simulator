@@ -57,7 +57,9 @@
 4. ***Minimarket***
     - Property
         - minimarketMoney (total uang si player utk restock uang/level minimarket, klo udh 0 atau minus game over mungkin)
-        - minimarketTutorial _bool_ (klo true ada dialog tambahan utk tutorial, klo false ya gk ada)
+        - minimarketCustomers (jlh customer per level gt) _list_
+        - minimarketLevel _int_
+        - minimarketDay (kek udah main sampe day berapa gt) _int_
 5. ***Stock*** (ini daftar semua produk gt)
     - Property
         - listOfProducts _dict or maybe 2d list, blm tau soalnya ni cuman bacot2 dulu ide_
