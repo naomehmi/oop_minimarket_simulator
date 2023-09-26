@@ -8,6 +8,7 @@
 - ada tutorial dari si pemilik minimarket
 - buang produk yang udah expired
 - gameplay nya diinspirasi dari 'supermarket cashier', coba kelen tes install di playstore AWKWKKW
+- jujur setelah membaca2 ulg apa yg kutulis, kayaknya bakal susah si gaiz rip, klo ada ide yg lebi sederhana tulis aja
 
 ## classes
 
