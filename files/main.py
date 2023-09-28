@@ -16,7 +16,7 @@ def tutorialLevel():
     print("Pick an option (1/2/3).")
     print()
     sleep(0.3)
-    print(f"=> Hello, {player.employeeName}. Welcome to your first shift.")
+    print(f"=> Hello, {player.employeeName}. Welcome to your first shift. I will show you how it works.")
     print("=> There are three choices for you to pick everyday. Let's go over them one by one.")
     interact = None
     print()
@@ -98,10 +98,10 @@ stock = stock([[],[],[],[],[],[],[],[]],10)
 unlocked = 2
 cond = ["GOOD", "BAD", "GOOD","GOOD","GOOD", "GOOD", "GOOD", "GOOD"]
 for i in range(7):
-    stock.listofProducts[0].append(consumable("AP-"+str(randrange(1000,9999)),"APPLE",3.00,"PCS","GOOD","1 week"))
-stock.listofProducts[0].append(consumable("AP-"+str(randrange(1000,9999)),"APPLE",3.00,"PCS","BAD","1 week"))
+    stock.listofProducts[0].append(consumable("AP-"+str(randrange(1000,10000)),"APPLE",3.00,"PCS","GOOD","1 week"))
+stock.listofProducts[0].append(consumable("AP-"+str(randrange(1000,10000)),"APPLE",3.00,"PCS","BAD","1 week"))
 for i in range(10):
-    stock.listofProducts[1].append(nonConsumable("MK-"+str(randrange(1000,9999)),"MILK",3.00,"PCS",cond[randrange(1,1000)%8]))
+    stock.listofProducts[1].append(nonConsumable("MK-"+str(randrange(1000,10000)),"MILK",3.00,"PCS",cond[randrange(1,1000)%8]))
 print("=" * 75)
 print()
 if menu == 'p':
@@ -111,7 +111,7 @@ if menu == 'p':
     print()
     sleep(5)
     print("=> Before we start, what's your name?")
-    player = employee("EMPLOYEE"+str(randrange(1000,9999)),input("=> ").title())
+    player = employee("EMPLOYEE"+str(randrange(1000,10000)),input("=> ").title())
     print()
     interact = None
     print(f"=> Would you like to play our interactive tutorial, {player.employeeName}? (Y/N)")
