@@ -1,160 +1,142 @@
-# PENJELASAN CODE yg agak rumit
+# CODE NOTES
 
-## di file class
+*** pas edit file ini, bikin kode pakek inisial di akhir paragraf jadi bisa tau siapa2 aja yang udah berkontribusi.
 
-itu def showStock (dari class stock) itu utk format tabel, tampilin semua jenis.
+(4/10/23) saya suggest demo dulu codenya di laptop kalian. Aku udah sediakan tutorial singkat untuk game kita, biar nanti kalian bisa ngerti penjelasanku di bawah _- N_
+
+## file minimarketClasses.py
+
+### product class
+
 ```
-def showStock(self,unlocked,name,tutorial=False):
-        print("-"*71)
-        print("|{:^3}|{:^15}|{:^15}|{:^12}|{:^20}|".format("No.","Product Code","Product Name", "Total Stock","Price per Unit"))
-        print("|{:^3}|{:^15}|{:^15}|{:^12}|{:^20}|".format("-"*3,"-"*15,"-"*15,"-"*12,"-"*20))
-        for i in range(unlocked):
-            print("|{:^3}|{:^15}|{:^15}|{:^12}|{:^20}|".format(i+1, self.listofProducts[i][0].productCode, self.listofProducts[i][0].productName, str(len(self.listofProducts[i]))+" "+self.listofProducts[i][0].productUOM,self.listofProducts[i][0].productPrice))
-            i += 1
-        print("-"*71)
-        print()
+from time import sleep
+from random import randrange
+
+class product:
+    def __init__(self, productCode, productName, productPrice, productUOM, productCondition):
+        self.productCode = productCode
+        self.productName = productName
+        self.productPrice = productPrice
+        self.productUOM = productUOM
+        self.productCondition = productCondition
 ```
-ini dibawah untuk pilih mau cek produk mana secara detail. Kek misal baris pertama di tabel itu apel. Jadi klo user input '1' itu nanti lihat masing-masing apel, kek bs cek udh ada yg rusak atau expired. class stock ini ibaratnya kek rak-rak isi produknya gitu.
+
+Ini class produk. Keknya nama property nya boleh kupendekin, kek dari `self.productCode` jadi `self.code` doang, biar hemat tenaga jari. Propertinya ada kodenya, itu nanti dirandom aja, abis itu ada nama produk, harga, satuan unit, dan kondisinya masi bagus/rusak. Nah, aku juga terpikir untuk membuat kelas ini abstrak, karena aku sering silap pakek kelas ini padahal gabole, cuman bisa pakek consumable sm nonConsumable kita. Gimana menurut kelen? _- N_
+
+<hr>
+
+### consumable and nonConsumable classes
+
 ```
+class consumable(product):
+    def __init__(self, productCode, productName, productPrice, productUOM, productCondition, productExpDate):
+        super().__init__(productCode, productName, productPrice, productUOM, productCondition)
+        self.productExpDate = productExpDate
+
+class nonConsumable(product):
+    def __init__(self, productCode, productName, productPrice, productUOM, productCondition):
+        super().__init__(productCode, productName, productPrice, productUOM, productCondition)
+```
+
+Ini dua adlh child dari class produk. Consumable untuk produk yg bisa expired kek makanan, klo nonConsumable untuk produk yg gk bs expired. Sejauh ini masi blm ada method, karena kek emg produknya bs ngapain T-T. Saya juga stuggle si buat exp date sm product condition, karena untuk exp aku agak bingung gimana randomize tgl nya, jadi di main program utk sementara aku bikin semua '1 week', nnt kalian mikir dulu idenya. Abis itu utk product condition, aku bikin ada 1 dlm 9 kemungkinan dia bad, sisanya good. di main program ada kutulis, tp keknya mending aku pindahin ke sini aja gak sih. _- N_
+
+<hr>
+
+### customer class
+
+```
+class customer:
+    def __init__(self, customerName, customerCart):
+        self.customerName = customerName
+        self.customerCart = customerCart
+    def fillCart(self):
+        pass
+    def pay(self):
+        pass
+```
+
+Class customer, untuk pelanggan minimarket kita. Jadi cart saya kepikir bikin tipe datanya dictionary saja, kek cth {apel : 2 pcs, susu : 2pcs} gitu. nanti bakal randomize utk method fillCart() untuk isi produk2nya, dan kita harus pastikan gak bakal ngebug kek misal ambil apel 10 pcs padahal stock hanya tersedia 5 gitu. Bakal susah sepertinya, tp kita gak boleh nyerah. Untuk method pay, itu blm 100% yakin, itu biar trigger menjalankan method cashier() si employee, nanti kujelasin di bagian class employee _- N_
+
+<hr>
+
+### employee Class
+
+```
+class employee:
+    def __init__(self, employeeCode, employeeName):
+        self.employeeCode = employeeCode
+        self.employeeName = employeeName
+    def cashier(self):
+        pass
+```
+
+Untuk class employee, cashier saya kepikir untuk ikut game ini di play store, namanya Supermarket Cashier. Jadi sistem gamenya, kita jadi kasir gitu input2, abis itu kasi kembalian berapa lbr 10rb, berapa lbr 5rb, harus uang pas untuk kembaliannya. Pakek while() seharusnya bisa lah buat method ini. Untuk demo bisa lihat di foto yg w udah lampirkan di github, yang ada skema2 (buriq si tulisannya, but kira2 aja lah itu blm pasti). _- N_
+
+<hr>
+
+### minimarket class
+
+```
+class minimarket:
+    def __init__ (self, minimarketMoney, minimarketCustomers, minimarketLevel, minimarketDay):
+        self.minimarketMoney = minimarketMoney
+        self.minimarketCustomers = minimarketCustomers
+        self.minimarketLevel = minimarketLevel
+        self.minimarketDay = minimarketDay
+```
+
+Saya kepikir untuk class minimarket bisa level up gitu, terus sehari berapa customers, bla bla bla. money ya sisa uang seluruh minimarket, customer itu jumlah customer per hari, abis itu ada level (dimana klo udah naik bisa unlock lebih banyak item), terus day itu untuk hitung udah berapa lama si player main game ini. _- N_
+
+<hr>
+
+### stock class
+
+ini bakal kupecahin jadi bbrp bagian karena ane padat si methodnya. _- N_
+
+```
+class stock:
+    def __init__ (self, listofProducts, stockMaxCapacity):
+        self.listofProducts = listofProducts
+        self.stockMaxCapacity = stockMaxCapacity
+```
+
+Ini deklarasi property doang. jadi listOfProducts itu untuk tampilin dalam tabel semua produk kita, abis itu stockMaxCapacity buat jumlah maksimum per produk yang bisa dijual. Biar bisa menghindari player nya beli kek 1000000000 apel misalnya. Nanti per level bisa dinaikkan juga jumlahnya.
+
+```
+    def showStock(self,unlocked,tutorial=False):
+        def printProducts():
+            print("-"*60)
+            print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("No.","Product Name", "Total Stock","Price per Unit (USD)"))
+            print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("-"*3,"-"*15,"-"*12,"-"*25))
+            for i in range(unlocked):
+                print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(i+1, self.listofProducts[i][0].productName, str(len(self.listofProducts[i]))+" "+self.listofProducts[i][0].productUOM,self.listofProducts[i][0].productPrice))
+                i += 1
+            print("-"*60)
+            print()
+            print(f"Press '0' to go back to the main menu, or press a number between 1-{unlocked} to check each item of the product.")
+        printProducts()
         interact = ""
         while interact != "0" or interact > str(unlocked) or interact < "0":
             if tutorial:
-                print(f"Let's try to check our apples. Since apple is on the number '1' row, press '1', {name}.")
-            else:
-                print(f"Press '0' to go back to the main menu, or press a number between 1-{unlocked} to check each item of the product")
+                print(f"Let's try to check our apples. Since apple is on the No. '1' row, press '1'")
             interact = input("=> ")
             if tutorial:
                 if interact != "1":
                     print("=> Press '1' to continue the tutorial.")
                     continue
             if "1" <= interact <= str(unlocked):
-                self.restock(int(interact)-1)
                 if tutorial:
+                    self.restock(int(interact)-1,True)
+                    printProducts()
+                    if tutorial:
+                        print("=> Press 0 to return to the previous menu")
                     tutorial = False
+                else:
+                    self.restock(int(interact)-1)
             elif interact == "0":
                 break
             else:
                 print("=> there is no product with that number. Try again.")
 ```
 
-## di file program utama
-
-ini untuk tutorial, kek demo cara mainnya
-
-```
-def tutorialLevel():
-    sleep(0.3)
-    print(f"DAY {miniMarket.minimarketLevel} <TUTORIAL>")
-    print("="*5)
-    print()
-    print("1. Check Minimarket's Stock")
-    sleep(0.3)
-    print("2. Start shift")
-    sleep(0.3)
-    print("3. Resign")
-    print("Pick an option (1/2/3).")
-    print()
-    sleep(0.3)
-    print(f"=> Hello, {player.employeeName}. Welcome to your first shift.")
-    print("=> There are three choices for you to pick everyday. Let's go over them one by one.")
-    interact = None
-    print()
-    print("=> Try pressing '1' to check the minimarket's stock.")
-    while interact != "1":
-        interact = input("=> ")
-        if interact != "1":
-            print("=> Press '1'")
-    print()
-    stock.showStock(unlocked,player.employeeName,True)
-```
-terus di bawah ini untuk menu utama aplikasi kita. sebnrnya ini simpel aja, yg bikin panjang itu adlh gambar orang yg aku bikin AWKWKWKWK
-```
-def mainMenu():
-    print("="*75)
-    sleep(0.03)
-    print("|{:^73}|".format(" "))
-    print("|{:^73}|".format("MINIMARKET SIMULATOR"))
-    sleep(0.03)
-    print("|{:^73}|".format("*"*20))
-    sleep(0.03)
-    print("|{:^73}|".format(" "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","  ________"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" "," /        \_____         __________"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","/__________\____|       |          |"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|    |  |  |            |  |  |    |"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|          |            |          |"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|    \__/  |            |  \__/    |"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|__________|            |__________|"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|        __|____        |          |"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|       |______|     ___|_____     |"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|    ______| |__   __||_____||__   |"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|    |          |  \_|_|_|_|_|_/   |"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|___ |__________|___\|_|_|_|_|/    |"," "))
-    sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|                             |    |"," "))
-    sleep(0.03)
-    print("|{:^73}|".format(" "))
-    sleep(0.03)
-    print("|{:^73}|".format(" "))
-    sleep(0.03)
-    print("|{:^73}|".format("PRESS 'P' TO PLAY"))
-    sleep(0.03)
-    print("|{:^73}|".format("PRESS 'Q' TO QUIT"))
-    sleep(0.03)
-    print("|{:^73}|".format(" "))
-    sleep(0.03)
-    print("="*75)
-    interact = None
-    while interact != 'p' and interact != 'q':
-        interact = input("=> ").lower()
-        if interact != 'p' and interact != 'q':
-            print("=> Press 'p' or 'q'")
-    if interact == 'p':
-        print()
-        print("{:^74}".format("Loading"))
-        print("{:^22}".format(" "),end="")
-        for i in range(30):
-            print("∎",end="")
-            sleep(0.02)
-        print()
-        print()
-    return interact
-```
-ini gambar di menu utamanya :
-```
-   ________
-  /        \_____         __________
- /__________\____|       |          |
- |    |  |  |            |  |  |    |
- |          |            |          |
- |    \__/  |            |  \__/    |
- |__________|            |__________|
- |        __|____        |          |
- |       |______|     ___|_____     |
- |    ______| |__   __||_____||__   |
- |    |          |  \_|_|_|_|_|_/   |
- |___ |__________|___\|_|_|_|_|/    |
- |                             |    |
-```
-jadi menu utamanya, klo ketik 'p' main game, terus ketik 'q' itu quit
-
-abis itu, di bawah ini cuman deklarasi produk default. tp nnt condition nya aku randomize good/bad. ini cuman testing aja.
-
-```
-for i in range(7):
-    stock.listofProducts[0].append(consumable("RA-759","APPLE",3.00,"PCS","GOOD",datetime.datetime(2023,12,1)))
-for i in range(10):
-    stock.listofProducts[1].append(nonConsumable("MK-011","MILK",3.00,"PCS","GOOD"))
-```
+def printProducts() untuk tampilkan dalam bentuk tabel. klo kalian ada nampak `if tutorial:` itu artinya klo misal lagi mode tutorial (alias `tutorial = True`), kodenya dijalankan. Tapi klo mode normal (`tutorial = False`), bagian kode itu diskip aja biar gak berbelit2. Jadi per baris ada setiap jenis produk yg dijual misal apel, susu, dsb. Jadi player tinggal ketik barisan yang mana yang ingin dicek secara detail. nanti di method restock() baru bisa kek hapus produk, beli produk, dll. _- N_
