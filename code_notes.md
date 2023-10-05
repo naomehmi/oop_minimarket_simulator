@@ -100,7 +100,7 @@ class stock:
         self.stockMaxCapacity = stockMaxCapacity
 ```
 
-Ini deklarasi property doang. jadi `listOfProducts` itu untuk tampilin dalam tabel semua produk kita, abis itu st`ockMaxCapacity buat jumlah maksimum per produk yang bisa dijual. Biar bisa menghindari player nya beli kek 1000000000 apel misalnya. Nanti per level bisa dinaikkan juga jumlahnya.
+Ini deklarasi property doang. jadi `listOfProducts` itu untuk tampilin dalam tabel semua produk kita, abis itu st`ockMaxCapacity buat jumlah maksimum per produk yang bisa dijual. Biar bisa menghindari player nya beli kek 1000000000 apel misalnya. Nanti per level bisa dinaikkan juga jumlahnya. _- N_
 
 ```
     def showStock(self,unlocked,tutorial=False):
