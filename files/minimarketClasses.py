@@ -1,7 +1,7 @@
-#CLASS STOCK MASI NGEBUG AMITOFO
 from time import sleep
 from random import randrange
 
+#ini keknya mau kubikin abstract tp blm tau
 class product:
     def __init__(self, code, name, price, uom, condition):
         self.code = code
@@ -23,8 +23,10 @@ class customer:
     def __init__(self, name, cart):
         self.name = name
         self.cCart = cart
+    #kek 'mengisi keranjanng' lah dengan produk2. ini nanti bakal diambil secara random
     def fillCart(self):
         pass
+    #belum tau, mungkin kuhapus klo gak dipakek
     def pay(self):
         pass
 
@@ -32,9 +34,11 @@ class employee:
     def __init__(self, code, name):
         self.code = code
         self.name = name
+    #proses game utamanya, kek bayar, kasi kembalian, dll
     def cashier(self):
         pass
 
+#stats minimarket
 class minimarket:
     def __init__ (self, money, customers, level, day):
         self.money = money
@@ -42,11 +46,13 @@ class minimarket:
         self.level = level
         self.day = day
 
+#stock ini boleh kita anggap rak produk lah gitu
 class stock:
     def __init__ (self, listofProducts, stockMaxCapacity):
         self.listofProducts = listofProducts
         self.stockMaxCapacity = stockMaxCapacity
     
+    #menu tampilkan produk yg kita ada
     def showStock(self,unlocked,tutorial=False):
         def printProducts():
             print("-"*60)
@@ -86,6 +92,7 @@ class stock:
             else:
                 print("=> there is no product with that number. Try again.")
 
+    #untuk restock sm buang produk
     def restock(self, prod, tutorial=False):
         def printProducts():
             print()
