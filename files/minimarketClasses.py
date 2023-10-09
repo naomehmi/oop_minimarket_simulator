@@ -3,44 +3,44 @@ from time import sleep
 from random import randrange
 
 class product:
-    def __init__(self, productCode, productName, productPrice, productUOM, productCondition):
-        self.productCode = productCode
-        self.productName = productName
-        self.productPrice = productPrice
-        self.productUOM = productUOM
-        self.productCondition = productCondition
+    def __init__(self, code, name, price, uom, condition):
+        self.code = code
+        self.name = name
+        self.price = price
+        self.uom = uom
+        self.condition = condition
 
 class consumable(product):
-    def __init__(self, productCode, productName, productPrice, productUOM, productCondition, productExpDate):
-        super().__init__(productCode, productName, productPrice, productUOM, productCondition)
-        self.productExpDate = productExpDate
+    def __init__(self, code, name, price, uom, condition, expDate):
+        super().__init__(code, name, price, uom, condition)
+        self.expDate = expDate
 
 class nonConsumable(product):
-    def __init__(self, productCode, productName, productPrice, productUOM, productCondition):
-        super().__init__(productCode, productName, productPrice, productUOM, productCondition)
+    def __init__(self, code, name, price, uom, condition):
+        super().__init__(code, name, price, uom, condition)
 
 class customer:
-    def __init__(self, customerName, customerCart):
-        self.customerName = customerName
-        self.customerCart = customerCart
+    def __init__(self, name, cart):
+        self.name = name
+        self.cCart = cart
     def fillCart(self):
         pass
     def pay(self):
         pass
 
 class employee:
-    def __init__(self, employeeCode, employeeName):
-        self.employeeCode = employeeCode
-        self.employeeName = employeeName
+    def __init__(self, code, name):
+        self.code = code
+        self.name = name
     def cashier(self):
         pass
 
 class minimarket:
-    def __init__ (self, minimarketMoney, minimarketCustomers, minimarketLevel, minimarketDay):
-        self.minimarketMoney = minimarketMoney
-        self.minimarketCustomers = minimarketCustomers
-        self.minimarketLevel = minimarketLevel
-        self.minimarketDay = minimarketDay
+    def __init__ (self, money, customers, level, day):
+        self.money = money
+        self.customers = customers
+        self.level = level
+        self.day = day
 
 class stock:
     def __init__ (self, listofProducts, stockMaxCapacity):
@@ -53,28 +53,32 @@ class stock:
             print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("No.","Product Name", "Total Stock","Price per Unit (USD)"))
             print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("-"*3,"-"*15,"-"*12,"-"*25))
             for i in range(unlocked):
-                print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(i+1, self.listofProducts[i][0].productName, str(len(self.listofProducts[i]))+" "+self.listofProducts[i][0].productUOM,self.listofProducts[i][0].productPrice))
+                print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(i+1, self.listofProducts[i][0].name, str(len(self.listofProducts[i]))+" "+self.listofProducts[i][0].uom,self.listofProducts[i][0].price))
                 i += 1
             print("-"*60)
             print()
             print(f"Press '0' to go back to the main menu, or press a number between 1-{unlocked} to check each item of the product.")
-        printProducts()
         interact = ""
         while interact != "0" or interact > str(unlocked) or interact < "0":
+            printProducts()
             if tutorial:
                 print(f"Let's try to check our apples. Since apple is on the No. '1' row, press '1'")
             interact = input("=> ")
             if tutorial:
                 if interact != "1":
-                    print("=> Press '1' to continue the tutorial.")
+                    print("=> Press '1' to continue the tutorial.\n")
                     continue
             if "1" <= interact <= str(unlocked):
                 if tutorial:
                     self.restock(int(interact)-1,True)
                     printProducts()
-                    if tutorial:
-                        print("=> Press 0 to return to the previous menu")
+                    print("\n=> Press '0' to return to the previous menu")
+                    while interact != "0":
+                        interact = input("=> ")
+                        if interact != "0":
+                            print("=> Press '0' to continue the tutorial.")
                     tutorial = False
+                    break
                 else:
                     self.restock(int(interact)-1)
             elif interact == "0":
@@ -85,18 +89,28 @@ class stock:
     def restock(self, prod, tutorial=False):
         def printProducts():
             print()
-            print("Product :",self.listofProducts[prod][0].productName)
+            print("Product :",self.listofProducts[prod][0].name)
             sleep(0.03)
             print("-"*50)
             sleep(0.03)
-            print("|{:^3}|{:^15}|{:^15}|{:^12}|".format("No.","Product Code","Expiry Date","Condition"))
-            sleep(0.03)
-            print("|{:^3}|{:^15}|{:^15}|{:^12}|".format("-"*3,"-"*15,"-"*15,"-"*12))
-            sleep(0.03)
-            for i in range(len(self.listofProducts[prod])):
-                print("|{:^3}|{:^15}|{:^15}|{:^12}|".format(i+1,self.listofProducts[prod][i].productCode,self.listofProducts[prod][i].productExpDate,self.listofProducts[prod][i].productCondition))
-            sleep(0.03)
-            print("-"*50)
+            if(self.listofProducts[prod][0].__class__.__name__ == "consumable"):
+                print("|{:^3}|{:^15}|{:^15}|{:^12}|".format("No.","Product Code","Expiry Date","Condition"))
+                sleep(0.03)
+                print("|{:^3}|{:^15}|{:^15}|{:^12}|".format("-"*3,"-"*15,"-"*15,"-"*12))
+                sleep(0.03)
+                for i in range(len(self.listofProducts[prod])):
+                    print("|{:^3}|{:^15}|{:^15}|{:^12}|".format(i+1,self.listofProducts[prod][i].code,self.listofProducts[prod][i].expDate,self.listofProducts[prod][i].condition))
+                sleep(0.03)
+                print("-"*50)
+            elif(self.listofProducts[prod][0].__class__.__name__ == "nonConsumable"):
+                print("|{:^3}|{:^15}|{:^12}|".format("No.","Product Code","Condition"))
+                sleep(0.03)
+                print("|{:^3}|{:^15}|{:^12}|".format("-"*3,"-"*15,"-"*12))
+                sleep(0.03)
+                for i in range(len(self.listofProducts[prod])):
+                    print("|{:^3}|{:^15}|{:^15}|{:^12}|".format(i+1,self.listofProducts[prod][i].code,self.listofProducts[prod][i].condition))
+                sleep(0.03)
+                print("-"*50)
             print()
             print("What would you like to do?")
             sleep(0.03)
@@ -119,19 +133,20 @@ class stock:
             if tutorial:
                 if not first:
                     if interact != '2':
-                        print("=> press '2'")
+                        print("=> press '2' to continue the tutorial.")
                         continue
                 elif second:
                     if interact != "3":
-                        print("=> press '3'")
+                        print("=> press '3' to continue the tutorial.")
                         continue
                 else:
                     if interact != "1":
-                        print("=> press '1'")
+                        print("=> press '1' to continue the tutorial")
                         continue
             if interact == "1":
-                print(f"\n=> How many {self.listofProducts[prod][0].productName.lower()}s do you want to purchase?")
-                print("MAX CAPACITY PER PRODUCT :",self.stockMaxCapacity)
+                print(f"\n=> How many {self.listofProducts[prod][0].name.lower()}s do you want to purchase?")
+                print("=> MAX CAPACITY PER PRODUCT    :",self.stockMaxCapacity,self.listofProducts[prod][0].uom)
+                print("=> CURRENT QUANTITY OF PRODUCT :",len(self.listofProducts[prod]),self.listofProducts[prod][0].uom)
                 temp = "-1"
                 if tutorial:
                     print("\n=> The current maximum capacity of each product is 10.")
@@ -140,7 +155,7 @@ class stock:
                     temp = input("=> ")
                     if tutorial:
                         if temp != "3":
-                            print("press '3'")
+                            print("=> Press '3' to continue the tutorial")
                             continue
                     if temp <= "0":
                         print("=> Please input a number greater than 0.")
@@ -148,8 +163,8 @@ class stock:
                         print(f"=> You currently have {len(self.listofProducts[prod])} items. You are only allowed to buy up to {self.stockMaxCapacity - len(self.listofProducts[prod])} items.")
                     else:
                         for i in range(int(temp)):
-                            self.listofProducts[prod].append(consumable(self.listofProducts[prod][0].productCode[0:4]+str(randrange(1000,10000)),self.listofProducts[prod][0].productName,self.listofProducts[prod][0].productPrice,self.listofProducts[prod][0].productUOM,"GOOD","1 week"))
-                        print(f"=> {temp} {self.listofProducts[prod][0].productName.lower()}s have been added into your inventory.\n")
+                            self.listofProducts[prod].append(consumable(self.listofProducts[prod][0].code[0:3]+str(randrange(1000,10000)),self.listofProducts[prod][0].name,self.listofProducts[prod][0].price,self.listofProducts[prod][0].uom,"GOOD","1 week"))
+                        print(f"\n=> {temp} {self.listofProducts[prod][0].name.lower()}s have been added into your inventory.")
                         break
                 if tutorial:
                     second = True
@@ -167,10 +182,11 @@ class stock:
                         if not first:
                             if temp != "8":
                                 temp = "-1"
-                                print("=> press '8'")
+                                print("=> press '8' to continue the tutorial.")
                                 continue
                     if "1" <= temp <= str(len(self.listofProducts[prod])):
-                        print(f"=> Product {self.listofProducts[prod][int(temp)-1].productCode} on row {temp} has been discarded.")
+                        print(f"\n=> Product {self.listofProducts[prod][int(temp)-1].code} on row {temp} has been discarded.")
+                        sleep(0.48)
                         self.listofProducts[prod].pop(int(temp)-1)
                         sleep(0.03)
                         printProducts()
@@ -189,4 +205,3 @@ class stock:
                 break
             else:
                 print("=> press '1',  '2', or '3'")
-        print()
