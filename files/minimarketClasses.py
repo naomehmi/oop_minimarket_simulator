@@ -1,23 +1,62 @@
 from time import sleep
 from random import randrange
+import abc
 
-#ini keknya mau kubikin abstract tp blm tau
-class product:
+#class abstract product
+class abstractProduct(metaclass=abc.ABCMeta):
+    @abc.abstractproperty
+    def code(self):
+        pass
+    @abc.abstractproperty
+    def name(self):
+        pass
+    @abc.abstractproperty
+    def price(self):
+        pass
+    @abc.abstractproperty
+    def uom(self):
+        pass
+    @abc.abstractproperty
+    def condition(self):
+        pass
+
+#utk sementara tidak dibutuhkan
+# class product:
+#     def __init__(self, code, name, price, uom, condition):
+#         self.code = code
+#         self.name = name
+#         self.price = price
+#         self.uom = uom
+#         self.condition = condition
+
+#consumable = product yang ada exp date
+class consumable(abstractProduct):
+    code = ""
+    name= ""
+    price = 0
+    uom = ""
+    condition = ""
+    def __init__(self, code, name, price, uom, condition, expDate):
+        self.code = code
+        self.name = name
+        self.price = price
+        self.uom = uom
+        self.condition = condition
+        self.expDate = expDate
+
+#product yang gak ada exp date
+class nonConsumable(abstractProduct):
+    code = ""
+    name= ""
+    price = 0
+    uom = ""
+    condition = ""
     def __init__(self, code, name, price, uom, condition):
         self.code = code
         self.name = name
         self.price = price
         self.uom = uom
         self.condition = condition
-
-class consumable(product):
-    def __init__(self, code, name, price, uom, condition, expDate):
-        super().__init__(code, name, price, uom, condition)
-        self.expDate = expDate
-
-class nonConsumable(product):
-    def __init__(self, code, name, price, uom, condition):
-        super().__init__(code, name, price, uom, condition)
 
 class customer:
     def __init__(self, name, cart):
