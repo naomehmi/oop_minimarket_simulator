@@ -179,7 +179,7 @@ unlocked = 2
 #kondisi produk. Setiap produk ada 1 dalam 9 kemungkinan kondisinya buruk
 cond = ["GOOD", "BAD", "GOOD","GOOD","GOOD", "GOOD", "GOOD", "GOOD"]
 
-#ini generate apel dan susu. untuk apel biar gak ribet tutorial nya, aku bikin 9 apel yg good, sm 1 apel yg bad biar nnt tutorial bisa kasih tau cara untuk discard produk. utk generate produk lain aku bikin di fungsi terpisah aja
+#ini generate apel dan susu. untuk apel biar gak ribet tutorial nya, aku bikin 7 apel yg good, sm 1 apel yg bad biar nnt tutorial bisa kasih tau cara untuk discard produk. utk generate produk lain aku bikin di fungsi terpisah aja
 stock.generateProducts(7,0,"consumable",True)
 stock.generateProducts(10,1,"consumable")
 
