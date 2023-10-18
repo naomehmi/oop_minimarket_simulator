@@ -187,7 +187,7 @@ stock.generateProducts(10,1,"consumable")
 if menu == 'p':
     print("=" * 75)
     print()
-    print("=> Welcome to Minimarket Simulator, newbie. In this game, you will be playing as an minimarket employee.")
+    print("=> Welcome to Minimarket Simulator, newbie. In this game, you will be playing as a minimarket employee.")
     print("=> Your tasks include: processing customer payments, restocking products, and managing the minimarket's finances.")
     print("=> The game will be over if you get fired or quit your job. Are you ready?")
     print()
