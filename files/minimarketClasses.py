@@ -149,7 +149,7 @@ class stock:
             print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("No.","Product Name", "Total Stock","Price per Unit (USD)"))
             print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("-"*3,"-"*15,"-"*12,"-"*25))
             for i in range(unlocked):
-                print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(i+1, self.listofProducts[i][0].name, str(len(self.listofProducts[i]))+" "+self.listofProducts[i][0].uom,self.listofProducts[i][0].price))
+                print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(i+1, self.listofProducts[i][0].name, str(len(self.listofProducts[i]))+" "+self.listofProducts[i][0].uom,"%.2f" % self.listofProducts[i][0].price))
                 i += 1
             print("-"*60)
             print()
