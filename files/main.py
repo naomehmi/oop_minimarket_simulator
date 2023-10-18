@@ -8,16 +8,35 @@ fitur yang belum selesai:
 1. exp date
 2. main level (shift)
 3. stats review (stlh quit/resign)
+4. formatting tabel (blm rapi)
 """
 
+#try dan except nama si employee
+def employeeNameCheck():
+    try:
+        name = input("=> ")
+        if not name.isalpha():
+            raise ValueError("=> Numbers, spaces, and symbols are not allowed. Please try again :)\n")
+    except ValueError as e:
+        print(str(e))
+        #mencoba terus sampe gak ValueError
+        return employeeNameCheck()
+    return name.title()
+
+#main gameplay
 def mainGame(tutorial=False):
-    interact = None
+    #step = langkah ke brp dlm tutorial
     if tutorial:
         step = 1
-    while interact != "3":
+    while True:
         sleep(0.3)
-        print(f"DAY {miniMarket.level} <TUTORIAL>")
-        print("="*16)
+        print(f"DAY {miniMarket.level}",end=" ")
+        if tutorial:
+            print("<TUTORIAL>")
+            print("="*11,end="")
+        else:
+            print()
+        print("="*5)
         print()
         print("1. Check Minimarket's Stock") #check stock barang sebelum mulai shift
         sleep(0.3)
@@ -27,6 +46,8 @@ def mainGame(tutorial=False):
         print("Pick an option (1/2/3).")
         print()
         sleep(0.3)
+
+        #klo tutorial = true
         if tutorial:
             if step == 1:
                 print(f"=> Hello, {player.name}. Welcome to your first shift. I will show you how it works.")
@@ -36,27 +57,39 @@ def mainGame(tutorial=False):
             elif step == 2:
                 print("=> Alright, now that we have already managed our stocks before we open the minimarket, let's start today's shift.")
                 print(f"=> Press '2' to start your first shift, {player.name}.")
-            while interact != str(step):
-                interact = input("=> ")
-                if interact != str(step):
-                    print(f"=> Press '{str(step)}' to continue the tutorial.")
-                    continue
+            while True:
+                try:
+                    interact = int(input("=> "))
+                    if interact == step:
+                        break
+                    else:
+                        raise ValueError
+                except ValueError:
+                    print(f"=> Press '{step}' to continue the tutorial.")
             step += 1
+
+        #klo gk tutorial
         else:
-            interact = input("=> ")
+            try:
+                interact = int(input("=> "))
+                if interact < 1 or interact > 3:
+                    raise ValueError
+            except ValueError:
+                print("=> Press '1', '2', or '3'.")
         print()
-        if interact == "1":
+        if interact == 1:
             if tutorial:
                 stock.showStock(unlocked,True)
                 interact = None
             else:
                 stock.showStock(unlocked)
-        elif interact == '2':
+        elif interact == 2:
+            #proses kasir2an
             pass
-        elif interact == '3':
-            pass
-        else:
-            print("=> Press '1', '2', or '3'.")
+        elif interact == 3:
+            #nanti aku mau tampilin progress si player
+            print("byebye")
+            break
         print()
 
 
@@ -111,10 +144,13 @@ def mainMenu():
     print("|{:^73}|".format(" "))
     sleep(0.03)
     print("="*75)
-    interact = None
-    while interact != 'p' and interact != 'q':
-        interact = input("=> ").lower()
-        if interact != 'p' and interact != 'q':
+    while True:
+        try:
+            interact = input("=> ").lower()
+            if interact != 'p' and interact != 'q':
+                raise ValueError
+            break
+        except ValueError:
             print("=> Press 'p' or 'q'")
     #mulai game
     if interact == 'p':
@@ -127,45 +163,53 @@ def mainMenu():
         print()
         print()
     return interact
+
 #tampil menu utama
 menu = mainMenu()
+
 #uang awal = 1000, customer utk level 1 = 3 org, masih level 1, dan masih shift 1
 miniMarket = minimarket(1000, 3, 1, 1)
+
 #list kosong itu kita anggap rak tarok produk
 stock = stock([[],[],[],[],[],[],[],[]],10)
+
 #berapa produk yang telah diunlocked
 unlocked = 2
+
 #kondisi produk. Setiap produk ada 1 dalam 9 kemungkinan kondisinya buruk
 cond = ["GOOD", "BAD", "GOOD","GOOD","GOOD", "GOOD", "GOOD", "GOOD"]
+
 #ini generate apel dan susu. untuk apel biar gak ribet tutorial nya, aku bikin 9 apel yg good, sm 1 apel yg bad biar nnt tutorial bisa kasih tau cara untuk discard produk. utk generate produk lain aku bikin di fungsi terpisah aja
-for i in range(7):
-    stock.listofProducts[0].append(consumable("AP-"+str(randrange(1000,10000)),"APPLE",3.00,"PCS","GOOD","1 week"))
-stock.listofProducts[0].append(consumable("AP-"+str(randrange(1000,10000)),"APPLE",3.00,"PCS","BAD","1 week"))
-for i in range(10):
-    stock.listofProducts[1].append(consumable("MK-"+str(randrange(1000,10000)),"MILK",3.00,"PCS",cond[randrange(1,1000)%8],"1 week"))
-#intro
-print("=" * 75)
-print()
+stock.generateProducts(7,0,"consumable",True)
+stock.generateProducts(10,1,"consumable")
+
+#intro dan tutorial
 if menu == 'p':
+    print("=" * 75)
+    print()
     print("=> Welcome to Minimarket Simulator, newbie. In this game, you will be playing as an minimarket employee.")
     print("=> Your tasks include: processing customer payments, restocking products, and managing the minimarket's finances.")
     print("=> The game will be over if you get fired or quit your job. Are you ready?")
     print()
-    sleep(3)
-    #nama player
-    print("=> Before we start, what's your name?")
-    player = employee("EMPLOYEE"+str(randrange(1000,10000)),input("=> ").title())
+    sleep(2)
+
+    #buat object player pakek class employee
+    print("=> Before we start, what's your name? (Numbers, spaces, and symbols are not allowed)")
+    player = employee("EMPLOYEE"+str(randrange(1000,10000)),employeeNameCheck())
     print()
-    interact = None
+
     #tanya klo mau tutorial atau lgsg skip ke game utama
     print(f"=> Would you like to play our interactive tutorial, {player.name}? (Y/N)")
-    while interact != "y" and interact != "n":
-        interact = input("=> ").lower()
-        print()
-        if interact == "y":
-            mainGame(True)
-        elif interact == "n":
-            #blm buat
+    while True:
+        try:
+            interact = input("=> ").lower()
+            print()
+            if interact == "y":
+                mainGame(True)
+            elif interact == "n":
+                mainGame()
+            else:
+                raise ValueError
             break
-        else:
+        except ValueError:
             print("=> Press 'y' or 'n'")
