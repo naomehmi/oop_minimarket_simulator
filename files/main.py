@@ -30,7 +30,7 @@ def mainGame(tutorial=False):
         step = 1
     while True:
         sleep(0.3)
-        print(f"DAY {miniMarket.level}",end=" ")
+        print(f"DAY {miniMarket.day}",end=" ")
         if tutorial:
             print("<TUTORIAL>")
             print("="*11,end="")
@@ -121,7 +121,7 @@ def mainMenu():
     sleep(0.03)
     print("|{:^18}{:<36}{:^19}|".format(" ","|__________|            |__________|"," "))
     sleep(0.03)
-    print("|{:^18}{:<36}{:^19}|".format(" ","|        __|____        |          |"," "))
+    print("|{:^18}{:<36}{:^19}|".format(" ","|        __|___         |          |"," "))
     sleep(0.03)
     print("|{:^18}{:<36}{:^19}|".format(" ","|       |______|     ___|_____     |"," "))
     sleep(0.03)
@@ -132,6 +132,8 @@ def mainMenu():
     print("|{:^18}{:<36}{:^19}|".format(" ","|___ |__________|___\|_|_|_|_|/    |"," "))
     sleep(0.03)
     print("|{:^18}{:<36}{:^19}|".format(" ","|                             |    |"," "))
+    sleep(0.03)
+    print("|{:^5}{:^62}{:^6}|".format(" ","-"*52," "))
     sleep(0.03)
     print("|{:^73}|".format(" "))
     sleep(0.03)
