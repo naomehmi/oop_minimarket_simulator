@@ -11,18 +11,6 @@ fitur yang belum selesai:
 4. formatting tabel (blm rapi)
 """
 
-#try dan except nama si employee
-def employeeNameCheck():
-    try:
-        name = input("=> ")
-        if not name.isalpha():
-            raise ValueError("=> Numbers, spaces, and symbols are not allowed. Please try again :)\n")
-    except ValueError as e:
-        print(str(e))
-        #mencoba terus sampe gak ValueError
-        return employeeNameCheck()
-    return name.title()
-
 #main gameplay
 def mainGame(tutorial=False):
     #step = langkah ke brp dlm tutorial
@@ -83,15 +71,31 @@ def mainGame(tutorial=False):
                 interact = None
             else:
                 stock.showStock(unlocked)
+
         elif interact == 2:
-            #proses kasir2an
-            pass
+            if miniMarket.day == 1:
+                customersToday = 1
+            elif 2 <= miniMarket.day <= 4:
+                customersToday = 3
+            else:
+                customersToday = 5
+            
+            customersHere = [customer([]) for i in range(customersToday)]
+
+            for i in customersHere:
+                if not i.fillCart(unlocked, stock):
+                    results()
+                    break
+            
+            
+            
         elif interact == 3:
             #nanti aku mau tampilin progress si player
             print("byebye")
+            results()
             break
+        miniMarket.day += 1
         print()
-
 
 #menu utama
 def mainMenu():
@@ -166,6 +170,10 @@ def mainMenu():
         print()
     return interact
 
+# hasil si player setelah gameover
+def results():
+    pass
+
 #tampil menu utama
 menu = mainMenu()
 
@@ -177,9 +185,6 @@ stock = stock([[],[],[],[],[],[],[],[]],10)
 
 #berapa produk yang telah diunlocked
 unlocked = 2
-
-#kondisi produk. Setiap produk ada 1 dalam 9 kemungkinan kondisinya buruk
-cond = ["GOOD", "BAD", "GOOD","GOOD","GOOD", "GOOD", "GOOD", "GOOD"]
 
 #ini generate apel dan susu. untuk apel biar gak ribet tutorial nya, aku bikin 7 apel yg good, sm 1 apel yg bad biar nnt tutorial bisa kasih tau cara untuk discard produk. utk generate produk lain aku bikin di fungsi terpisah aja
 stock.generateProducts(7,0,"consumable",True)
@@ -197,7 +202,7 @@ if menu == 'p':
 
     #buat object player pakek class employee
     print("=> Before we start, what's your name? (Numbers, spaces, and symbols are not allowed)")
-    player = employee("EMPLOYEE"+str(randrange(1000,10000)),employeeNameCheck())
+    player = employee()
     print()
 
     #tanya klo mau tutorial atau lgsg skip ke game utama
