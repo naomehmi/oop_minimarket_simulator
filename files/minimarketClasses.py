@@ -2,6 +2,8 @@ from time import sleep
 from random import randrange
 import abc
 
+#FITUR YANG BELUM : SISTEM UANG
+
 #class abstract product
 class product(metaclass=abc.ABCMeta):
     @abc.abstractproperty
@@ -51,21 +53,53 @@ class nonConsumable(product):
 
 #class customer/pelanggan
 class customer:
-    def __init__(self, name, cart):
-        self.name = name
-        self.cCart = cart
+    def __init__(self, cart):
+        self.cart = cart
     #kek 'mengisi keranjang' lah dengan produk2. ini nanti bakal diambil secara random
-    def fillCart(self):
-        pass
-    #belum tau, mungkin kuhapus klo gak dipakek
-    def pay(self):
-        pass
+    def fillCart(self,unlocked, stock):
+        available = [i for i in range(1,unlocked + 1)]
+
+        # quantity = randrange(1,sum([len(i) for i in stock.listofProducts]))
+
+        for i in range(randrange(1,min(len(available),4))):
+            if available == []:
+                if i == 0:
+                    print("There are not enough products for the customers, you're fired :/")
+                    return False
+                else:
+                    break
+            x = randrange(min(available),max(available) + 1) - 1
+            self.cart.append(stock.listofProducts[x][0])
+            stock.listofProducts[x].pop(0)
+            if stock.listofProducts[x] == []:
+                available.pop(x)
+        return True
+
+    #game utama ??
+    def pay(self, tutorial = False):
+        if tutorial:
+            print("It is time to serve your first customer.")
+            print("First, you need to input the items in the customer's cart.")
+            self.cart = sorted(self.cart, key = lambda x : x.key)
+            #print all products
 
 #class player
 class employee:
-    def __init__(self, code, name):
-        self.code = code
-        self.name = name
+    def __init__(self):
+        self.code = "EMPLOYEE"+str(randrange(1000,10000))
+        self.name = self.employeeNameCheck()
+
+    def employeeNameCheck(self):
+        try:
+            name = input("=> ")
+            if not name.isalpha():
+                raise ValueError("=> Numbers, spaces, and symbols are not allowed. Please try again :)\n")
+        except ValueError as e:
+            print(str(e))
+            #mencoba terus sampe gak ValueError
+            return self.employeeNameCheck()
+        return name.title()
+    
     #proses game utamanya, kek bayar, kasi kembalian, dll
     def gameplay(self):
         pass
@@ -84,6 +118,7 @@ class stock:
         self.listofProducts = listofProducts
         self.stockMaxCapacity = stockMaxCapacity
 
+    # menambah stok produk
     def generateProducts(self,quantity, product, className, tutorial=False):
         allProducts = [{
             "code" : "AP",
@@ -148,9 +183,17 @@ class stock:
             print("-"*60)
             print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("No.","Product Name", "Total Stock","Price per Unit (USD)"))
             print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("-"*3,"-"*15,"-"*12,"-"*25))
-            for i in range(unlocked):
-                print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(i+1, self.listofProducts[i][0].name, str(len(self.listofProducts[i]))+" "+self.listofProducts[i][0].uom,"%.2f" % self.listofProducts[i][0].price))
-                i += 1
+            i = 0
+            prod = iter(self.listofProducts)
+            while True:
+                try:
+                    a = next(prod)
+                    if a == []:
+                        raise StopIteration
+                    print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(i+1, self.listofProducts[i][0].name, str(len(self.listofProducts[i]))+" "+self.listofProducts[i][0].uom,"%.2f" % self.listofProducts[i][0].price))
+                    i += 1
+                except StopIteration:
+                    break 
             print("-"*60)
             print()
             print(f"Press '0' to go back to the main menu, or press a number between 1-{unlocked} to check each item of the product.")
@@ -274,7 +317,7 @@ class stock:
                         elif qty > self.stockMaxCapacity or len(self.listofProducts[prod]) + int(qty) > self.stockMaxCapacity:
                             raise ValueError(f"=> You currently have {len(self.listofProducts[prod])} items. You are only allowed to buy up to {self.stockMaxCapacity - len(self.listofProducts[prod])} items.")
                         else:
-                            self.generateProducts(int(qty)-1,prod,self.listofProducts[prod][0].__class__.__name__)
+                            self.generateProducts(int(qty),prod,self.listofProducts[prod][0].__class__.__name__)
                             print(f"\n=> {qty} {self.listofProducts[prod][0].name.lower()}s have been added into your inventory.")
                             sleep(0.3)
                             printProducts()
