@@ -1,11 +1,18 @@
 from time import sleep
 from random import randrange
+from datetime import datetime
 import abc
 
-#FITUR YANG BELUM : SISTEM UANG
+# FITUR YANG BELUM
+# ================
+# sistem manajemen keuangan (game ini bisa beli2 tp gk ada uanganya AWKWKWK)
+# Design pattern gabung employee dan customer => employee.shiftGameplay(variabelCustomer) misal
+# RAPIKAN FUNCTION GENERATEPRODUCTS() DI CLASS STOCK, BISA PAKAI DESIGN PATTERN UNTUK MERAPIKANNYA, jadi lgsg kek mis generateProducts(consumable(....))
+# validasi agar customer tidak mengambil product yang bad/expired
+# fak help me hiks
 
 #class abstract product
-class product(metaclass=abc.ABCMeta):
+class Product(metaclass=abc.ABCMeta):
     @abc.abstractproperty
     def code(self):
         pass
@@ -22,8 +29,8 @@ class product(metaclass=abc.ABCMeta):
     def condition(self):
         pass
 
-#consumable = product yang ada exp date
-class consumable(product):
+#Consumable = Product yang ada exp date
+class Consumable(Product):
     code = ""
     name= ""
     price = 0
@@ -37,8 +44,8 @@ class consumable(product):
         self.condition = condition
         self.expDate = expDate
 
-#product yang gak ada exp date
-class nonConsumable(product):
+#Product yang gak ada exp date
+class nonConsumable(Product):
     code = ""
     name= ""
     price = 0
@@ -51,15 +58,14 @@ class nonConsumable(product):
         self.uom = uom
         self.condition = condition
 
-#class customer/pelanggan
-class customer:
+#class Customer/pelanggan
+class Customer:
     def __init__(self, cart):
         self.cart = cart
+    
     #kek 'mengisi keranjang' lah dengan produk2. ini nanti bakal diambil secara random
     def fillCart(self,unlocked, stock):
         available = [i for i in range(1,unlocked + 1)]
-
-        # quantity = randrange(1,sum([len(i) for i in stock.listofProducts]))
 
         for i in range(randrange(1,min(len(available),4))):
             if available == []:
@@ -75,21 +81,13 @@ class customer:
                 available.pop(x)
         return True
 
-    #game utama ??
-    def pay(self, tutorial = False):
-        if tutorial:
-            print("It is time to serve your first customer.")
-            print("First, you need to input the items in the customer's cart.")
-            self.cart = sorted(self.cart, key = lambda x : x.key)
-            #print all products
-
 #class player
-class employee:
+class Employee:
     def __init__(self):
         self.code = "EMPLOYEE"+str(randrange(1000,10000))
-        self.name = self.employeeNameCheck()
+        self.name = self.EmployeeNameCheck()
 
-    def employeeNameCheck(self):
+    def EmployeeNameCheck(self):
         try:
             name = input("=> ")
             if not name.isalpha():
@@ -97,23 +95,144 @@ class employee:
         except ValueError as e:
             print(str(e))
             #mencoba terus sampe gak ValueError
-            return self.employeeNameCheck()
+            return self.EmployeeNameCheck()
         return name.title()
     
     #proses game utamanya, kek bayar, kasi kembalian, dll
-    def gameplay(self):
-        pass
+    def ShiftGameplay(self, customer, stock, unlocked, mistake, tutorial=False):
+        def printCart():
+            print("Customer's items:")
+            sleep(0.3)
+            for i in customer.cart:
+                print("{:<10} {:<10} {:<10}".format(i.code, i.name, i.price))
+                sleep(0.3)
 
-#stats minimarket
-class minimarket:
-    def __init__ (self, money, customers, level, day):
+        customer.cart = sorted(customer.cart, key = lambda x : x.name)
+
+        if tutorial:
+            print("\n=> It is time to serve your first Customer.")
+            print("\n=> Your task is to input the items that are in the customer's cart ")
+            print("=> The items have already been sorted by name, so all you need to do is input the name of the product and the quantity of each product.")
+            sleep(2.2)
+
+        print(f"\nMISTAKES : {mistake} / 5\n")
+        sleep(1)
+        if tutorial:
+            print("=> Here above, are the mistakes you are able to make per shift. If you have accumulated 5 mistakes, you will be fired. ")
+            print("=> But since this is only a tutorial, you are allowed to make as many mistakes as you want so ignore it for now...\n")
+            sleep(2.2)
+
+        printCart()
+        sleep(0.6)
+
+        items = {i.name : 0 for i in customer.cart}
+        for i in customer.cart: items[i.name] += 1
+        allItems = [stock.listofProducts[i][0].name for i in range(unlocked)]
+        allPrices = [stock.listofProducts[i][0].price for i in range(unlocked)]
+
+        firstItem = list(items.keys())[0] # tutorial only
+        firstQty = items[list(items.keys())[0]] #tutorial only
+
+        if tutorial:
+            print(f"\n=> As we can see, the customer has {firstQty} {firstItem}")
+            print(f"=> On the cashier computer below, choose {firstItem}")
+        print()
+        sleep(0.3)
+        print("="*75)
+        print()
+        print("{: ^75}".format("NEW PAYMENT"))
+        print("Available Items in minimarket : ")
+        sleep(0.3)
+
+        for i in range(unlocked):
+            print(str(i+1) + ". " + allItems[i])
+
+        receipts = []
+
+        customerItems = list(items.keys())
+
+        while mistake < 5:
+            while len(receipts) != len(customerItems):
+                try: 
+                    possibleErrors = [
+                        "Please input a number",
+                        "The customer does not have that product in their cart",
+                        "That is the wrong number of quantity of this item",
+                        f"Wrong. Choose {firstItem} please", # tutorial only
+                        f"Wrong. Input {firstQty}" # tutorial only
+                    ]
+                    idx = 0
+                    if mistake >= 5:
+                        return mistake
+                    it = int(input(f"PRODUCT (1 - {unlocked}) : "))
+                    if allItems[it - 1] not in customerItems:
+                        idx = 1 if not tutorial else 3
+                        raise ValueError
+                    idx = 0
+                    qt = int(input("QUANTITY OF PRODUCT : "))
+                    if qt != items[allItems[it - 1]]:
+                        idx = 2 if not tutorial else 4
+                        raise ValueError
+                    receipts.append({it : qt})
+                except ValueError:
+                    mistake += 1 if not tutorial else 0
+                    print("=>",possibleErrors[idx])
+                    print(f"=> MISTAKES : {mistake} / 5\n")
+            break
+
+        # PRINT RECEIPT
+        print("="*75)
+        sleep(0.03)
+        print("|{:^73}|".format(" "))
+        sleep(0.03)
+        print("|{:^73}|".format("COOL MINIMARKET"))
+        sleep(0.03)
+        print("|{:^73}|".format(" "))
+        sleep(0.03)
+        print("|{:^73}|".format(datetime.now().strftime("%c")))
+        sleep(0.03)
+        print("|{:^73}|".format(" "))
+        sleep(0.03)
+        print("|{:^73}|".format(f"Cashier : {self.code} - {self.name}"))
+        sleep(0.03)
+        print("|{:^73}|".format(" "))
+        sleep(0.03)
+
+        total = 0
+
+        for i in receipts:
+            for x, y in i.items():
+                price = allPrices[x - 1]
+                total += y * price
+                print("|{:<10}{:<25}{:17} x ${:>4}{:>10}|".format(" ", allItems[x-1], y, price ," "))
+                sleep(0.03)
+        print("|{:^73}|".format(" "))
+        sleep(0.03)
+        print("|{:<10}{:<52}+{:>10}|".format(" ", "="*50, " "))
+        sleep(0.03)
+        print("|{:^73}|".format(" "))
+        sleep(0.03)
+        print("|{:<10}{:<7} : {:>43}{:>10}|".format(" ", "TOTAL", "$" + str(total), " "))
+        sleep(0.03)
+        print("|{:^73}|".format(" "))
+        sleep(0.03)
+        print("="*75)
+
+        customerPaid = randrange(total, total + min([abs(i - total) for i in [500, 100, 50, 20, 10, 5]]))
+        print(customerPaid)
+
+        return mistake
+
+#stats Minimarket
+class Minimarket:
+    def __init__ (self, money, Customers, level, day):
         self.money = money
-        self.customers = customers
+        self.Customers = Customers
         self.level = level
         self.day = day
 
 #stock ini boleh kita anggap rak produk lah gitu
-class stock:
+class Stock:
     def __init__ (self, listofProducts, stockMaxCapacity):
         self.listofProducts = listofProducts
         self.stockMaxCapacity = stockMaxCapacity
@@ -125,37 +244,51 @@ class stock:
             "name" : "APPLE",
             "price" : 3.00,
             "uom" : "PCS",
-            }, {
+            }, 
+            
+            {
             "code" : "MK",
             "name" : "MILK",
             "price" : 3.45,
             "uom" : "PCS",
-            }, {
+            }, 
+            
+            {
             "code" : "EG",
             "name" : "EGGS",
             "price" : 7.50,
             "uom" : "CARTONS",
-            }, {
+            }, 
+            
+            {
             "code" : "TS",
             "name" : "TISSUE",
             "price" : 5.00,
             "uom" : "PCS",
-            }, {
+            }, 
+            
+            {
             "code" : "OV",
             "name" : "OLIVE OIL",
             "price" : 9.95,
             "uom" : "BOTTLE",
-            }, {
+            }, 
+            
+            {
             "code" : "CH",
             "name" : "WOODEN CHAIR",
             "price" : 25.56,
             "uom" : "PCS",
-            }, {
+            }, 
+            
+            {
             "code" : "TB",
             "name" : "WOODEN TABLE",
             "price" : 57.49,
             "uom" : "PCS",
-            }, {
+            }, 
+            
+            {
             "code" : "RC",
             "name" : "RICE",
             "price" : 15.46,
@@ -166,13 +299,13 @@ class stock:
 
         if tutorial:
             for _ in range(quantity):
-                self.listofProducts[product].append(consumable(allProducts[product]["code"]+"-"+str(randrange(1000,10000)),allProducts[product]["name"],allProducts[product]["price"],allProducts[product]["uom"],"GOOD","7 days"))
-            self.listofProducts[product].append(consumable(allProducts[product]["code"]+"-"+str(randrange(1000,10000)),allProducts[product]["name"],allProducts[product]["price"],allProducts[product]["uom"],"BAD","7 days"))
+                self.listofProducts[product].append(Consumable(allProducts[product]["code"]+"-"+str(randrange(1000,10000)),allProducts[product]["name"],allProducts[product]["price"],allProducts[product]["uom"],"GOOD","7 days"))
+            self.listofProducts[product].append(Consumable(allProducts[product]["code"]+"-"+str(randrange(1000,10000)),allProducts[product]["name"],allProducts[product]["price"],allProducts[product]["uom"],"BAD","7 days"))
             return
         
-        if className == "consumable":
+        if className == "Consumable":
             for _ in range(quantity):
-                self.listofProducts[product].append(consumable(allProducts[product]["code"]+"-"+str(randrange(1000,10000)),allProducts[product]["name"],allProducts[product]["price"],allProducts[product]["uom"],cond[randrange(1,1000)%8],"7 days"))
+                self.listofProducts[product].append(Consumable(allProducts[product]["code"]+"-"+str(randrange(1000,10000)),allProducts[product]["name"],allProducts[product]["price"],allProducts[product]["uom"],cond[randrange(1,1000)%8],"7 days"))
         else:
             for _ in range(quantity):
                 self.listofProducts[product].append(nonConsumable(allProducts[product]["code"]+"-"+str(randrange(1000,10000)),allProducts[product]["name"],allProducts[product]["price"],allProducts[product]["uom"],cond[randrange(1,1000)%8]))
@@ -201,10 +334,9 @@ class stock:
         doneRestock = False
         while True:
             printProducts()
-            if tutorial and not doneRestock:
-                print("\n=> Let's try to check our apples. Since apple is on row No. '1', press '1'.")
-            if tutorial and doneRestock:
-                print("Press '0' to return to the previous menu.")
+            if tutorial:
+                print("\n=> Let's try to check our apples. Since apple is on row No. '1', press '1'.") if not doneRestock else print("Press '0' to return to the previous menu.")
+                
             try:
                 interact = int(input("=> "))
                 if tutorial:
@@ -235,27 +367,30 @@ class stock:
             print()
             print("Product :",self.listofProducts[prod][0].name)
             print("-"*34,end="")
-            if className == "consumable":
+            if className == "Consumable":
                 print("-"*16,end="")
             print()
 
             print("|{:^3}|{:^15}|".format("No.","Product Code"),end="")
-            if className == "consumable":
+            if className == "Consumable":
                 print("{:^15}|".format("Expiry Date"),end="")
             print("{:^12}|".format("Condition"))
             print("|{:^3}|{:^15}|".format("-"*3,"-"*15),end="")
-            if className == "consumable":
+            if className == "Consumable":
                 print("{:^15}|".format("-"*15),end="")
             print("{:^12}|".format("-"*12))
             j = 1
+
             for i in self.listofProducts[prod]:
                 print("|{:^3}|{:^15}|".format(j,i.code),end="")
-                if className == "consumable":
+                if className == "Consumable":
                     print("{:^15}|".format(i.expDate),end="")
                 print("{:^12}|".format(i.condition))
                 j += 1
+
             print("-"*34,end="")
-            if className == "consumable":
+
+            if className == "Consumable":
                 print("-"*16,end="")
             print()
 
@@ -351,7 +486,7 @@ class stock:
                             if tutorial:
                                 first = True
                                 print("\n=> Now, let's restock and order some apples.")
-                                print("=> Always make sure there are always enough products for customers everyday before you start your shift.")
+                                print("=> Always make sure there are always enough products for Customers everyday before you start your shift.")
                                 print("=> The game will be over if there are not enough products that are in good condition and not expired yet.")
                                 print("\n=> Press '1' to buy more products")
                             break
