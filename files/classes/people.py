@@ -2,7 +2,6 @@ import math
 from datetime import datetime
 from time import sleep
 from random import randrange
-from productsAndStock import nonConsumable
 
 # class Customer/pelanggan
 class Customer:
@@ -130,79 +129,105 @@ class Employee:
 				for x, y in i.items():
 					price = allPrices[x - 1]
 					total += y * price
-					print("|{:<10}{:<25}{:17} x ${:<4}{:>13}|".format(" ", allItems[x-1], y, "%.2f" % price ," "))
-					sleep(0.03)
-			print("|{:^73}|".format(" "))
-			sleep(0.03)
-			print("|{:<10}{:<52}+{:>10}|".format(" ", "="*50, " "))
-			sleep(0.03)
-			print("|{:^73}|".format(" "))
-			sleep(0.03)
-			print("|{:<10}{:<7} : {:>40}{:>13}|".format(" ", "TOTAL", "$" + str("%.2f" % total), " "))
-			sleep(0.03)
-			print("|{:^73}|".format(" "))
-			sleep(0.03)
+					print("|{:<10}{:<25}{:17} x ${:<4}{:>13}|".format(" ", allItems[x-1], y, "%.2f" % price ," ")), sleep(0.03)
+			print("|{:^73}|".format(" ")), sleep(0.03)
+			print("|{:<10}{:<52}+{:>10}|".format(" ", "="*50, " ")), sleep(0.03)
+			print("|{:^73}|".format(" ")), sleep(0.03)
+			print("|{:<10}{:<7} : {:>40}{:>13}|".format(" ", "TOTAL", "$" + str("%.2f" % total), " ")), sleep(0.03)
+			print("|{:^73}|".format(" ")), sleep(0.03)
 			print("="*75)
 
 			# PROSES PENGEMBALIAN
 			customerPaid = randrange(math.ceil(total) + abs(10 - math.floor(total)), math.ceil(total + 25)) + (randrange(0,100) / 100)
 			print(f"\nCUSTOMER'S CASH : ${customerPaid}\n")
-			print("Give the customer the correct amount of change :")
-			changeNeeded = "%.2f" % (customerPaid - total)
-			taken = 0
+			print("\nGive the customer the correct amount of change to finish the payment.")
+			changeNeeded = (customerPaid - total)
+			taken = 0.00
 			cashInHand = []
 			money = [
 				{"name" : "1 cent", "value" : 0.01},
 				{"name" : "5 cent", "value" : 0.05},
-				{"name" : "10 cent", "value" : 0.1},
+				{"name" : "10 cent", "value" : 0.10},
 				{"name" : "25 cent", "value" : 0.25},
-				{"name" : "50 cent", "value" : 0.5},
-				{"name" : "1 dollar", "value" : 1},
-				{"name" : "5 dollars", "value" : 5},
-				{"name" : "10 dollars", "value" : 10},
-				{"name" : "50 dollars", "value" : 50},
-				{"name" : "100 dollars", "value" : 100},
+				{"name" : "50 cent", "value" : 0.50},
+				{"name" : "1 dollar", "value" : 1.00},
+				{"name" : "5 dollars", "value" : 5.00},
+				{"name" : "10 dollars", "value" : 10.00},
+				{"name" : "50 dollars", "value" : 50.00},
+				{"name" : "100 dollars", "value" : 100.00},
 			]
 			while True:
 				try:
-					possibleErrors = [
-						"Input a number 1-3",
-						"Input a number between 1-10",
-						"You have given the customer the wrong amount of change. Try again",
-					]
-					e = 0
-					print(f"cash taken out from register : {cashInHand}, total = {taken}")
-					print(f"change needed : {changeNeeded}")
+					print(f"\nCash taken : {cashInHand}, total = {'%.2f' % taken}")
+					print(f"\nChange needed for customer : {'%.2f' % changeNeeded}")
 
 					if taken:
-						print("Pick an action to continue (1-3)")
+						print("\nPick an action to continue (1-3)")
 						print("1. Take more money from cash register")
 						print("2. Put back money into cash register")
 						print("3. Give cash to customer and finish payment")
-						action = int(input("=>"))
+						action = int(input("=> "))
 						if not 1 <= action <= 3: raise ValueError
 
 					else: action = 1
 
 					if action == 1:
-						print("Pick 1 - 10 to select which bill to take from the cash register, or pick 0 to go back to the previous menu")
-						for i in range(1,6): print("{:<3} {:<12} | {:<2}. {:<12}".format(str(i) + ".", money[i-1]["name"], str(i + 5) + ".", money[i + 5 - 1]["name"]))
-						print()
-						interact = int(input("=> "))
-						if not 0 <= interact <= 10:
-							e = 1
-							raise ValueError
-						if interact == 0 : continue
-						taken += money[interact - 1]["value"]
-						cashInHand.append(money[interact - 1]["name"])
+						while True:
+							try:
+								print("\nPick 1 - 10 to select which bill/coin to take from the cash register", end="")
+								print(", or pick '0' to go back to the previous menu") if cashInHand else print()
+								for i in range(1,6): print("{:<3} {:<7} | {:<2} {:<12}".format(str(i) + ".", money[i-1]["name"], str(i + 5) + ".", money[i + 5 - 1]["name"]))
+								interact = int(input("=> "))
+								if not 0 <= interact <= 10:
+									e = 1
+									raise ValueError("Pick a number between 1-10")
+								if interact == 0 : continue
+								unit = "bills" if interact > 5 else "coins"
+								while True:
+									try:
+										print(f"How many {money[interact - 1]['name']} {unit} do you want to take from the cash register?")
+										qty = int(input("=> "))
+										if not 1 <= qty : raise ValueError("Input a number greater than or equal to 1")
+										if money[interact - 1]["value"] * qty > changeNeeded * 10: raise ValueError("I think that's too much than neccessary, pick a smaller number")
+										for i in range(qty):
+											cashInHand.append(money[interact - 1]["name"])
+										taken += money[interact - 1]["value"] * qty
+										break
+									except ValueError as e:
+										print(str(e) + "\n")
+								break
+							except ValueError:
+								pass
 					
 					elif action == 2:
-						tmp = { i + 1 : cashInHand[i] for i in range(len(cashInHand))}
+						tmp = {}
+						for i in range(len(cashInHand)) : tmp[i+1] = cashInHand[i]
+						for x, y in tmp.items():
+							print(f"{x}. {y}")
+						print(f"\nWhich dollar bill/coin do you want to put back into the cash register (1-{len(cashInHand)})? or pick '0' to go back to the previous menu.")
+						while True:
+							try:
+								it = int(input("=> "))
+								if not 0 <= it <= len(cashInHand): raise ValueError
+								if it == 0: break
+								for i in money:
+									if i["name"] == cashInHand[it - 1]: taken -= i["value"]
+								cashInHand.pop(it-1)
+								break
+							except ValueError:
+								print(f"pick a number between 1-{len(cashInHand)}")
 
+					elif action == 3:
+						if '%.2f' % taken == '%.2f' % changeNeeded:
+							print("\nThe amount of change you have returned is correct.\nThe customer has left the minimarket.")
+							break
+						else:
+							print("\nThe amount of change you have given is incorrect, try again.")
+							mistake += 1
+							print(f"=> MISTAKES : {mistake} / 3")
+							if mistake == 3: return mistake
 
 				except ValueError:
-					mistake += 1
-					if mistake == 3: return mistake
-					print(possibleErrors[e])
+					print("Input a number between 1-3")
 
 			return mistake
