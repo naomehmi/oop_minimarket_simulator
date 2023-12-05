@@ -17,22 +17,23 @@ class Customer:
 				if available == []:
 						if taken == 0: return False
 						else: break
-				x = randrange(min(available),max(available) + 1) - 1 #produk yang akan diambil customer
-				tmp = stock.shelf[x]
-				i = 0
-				condition = lambda x : tmp[x].condition == "BAD" 
-				exp = lambda x : tmp[x].expDate == "EXPIRED" if tmp[x].__class__.__name__ == "Consumable" else False
-				while (condition(i) or exp(i)):
-					i += 1
-					if i >= len(tmp): break
-				if i >= len(tmp):
-					available.remove(x + 1)
-					continue
-				self.cart.append(tmp[i])
-				stock.removeProducts(x, i)
-				taken += 1
-				if stock.shelf[x] == []:
+				x = randrange(0,len(available)) #produk yang akan diambil customer
+				if stock.shelf[available[x] - 1] == []:
 					available.pop(x)
+					continue
+				tmp = stock.shelf[available[x] - 1]
+				i = 0
+				condition = lambda y : tmp[y].condition == "BAD" 
+				exp = lambda y : tmp[y].expDate == "EXPIRED" if tmp[y].__class__.__name__ == "Consumable" else False
+				while (condition(i) or exp(i)) and i < len(tmp) - 1:
+					i += 1
+				if i >= len(tmp): continue
+				self.cart.append(tmp[i])
+				stock.removeProducts(available[x] - 1, i)
+				taken += 1
+				if i >= len(tmp):
+					available.pop(x)
+					continue
 
 		self.cart = sorted(self.cart, key = lambda x : x.name)
 		return True
@@ -41,7 +42,7 @@ class Customer:
 		print("Customer's items:")
 		sleep(0.3)
 		for i in self.cart:
-			print("{:<10} {:<10} {:<10} {:<4} {:<10}".format(i.code, i.name, i.price, i.condition, i.expDate))
+			print("{:<10} {:<10} {:<10}".format(i.code, i.name, i.price))
 			sleep(0.3)
 		return ""
 	
@@ -142,7 +143,8 @@ class Employee:
 			print("="*75)
 
 			# PROSES PENGEMBALIAN
-			customerPaid = randrange(math.ceil(total) + 1, math.ceil(total + 20)) + (randrange(0,100) / 100)
+			lowestMultipleOf5 = math.ceil(total / 5) * 5
+			customerPaid = randrange(lowestMultipleOf5, 10 * ((lowestMultipleOf5 // 10) + 1) + 1, 5)
 			print(f"\nCUSTOMER'S CASH : ${customerPaid}\n")
 			print("\nGive the customer the correct amount of change to finish the payment.")
 			changeNeeded = (customerPaid - total)
@@ -193,7 +195,7 @@ class Employee:
 										qty = int(input("=> "))
 										if not 0 <= qty : raise ValueError("Input a number greater than or equal to 0")
 										if qty == 0: break
-										if money[interact - 1]["value"] * qty > changeNeeded + 10: raise ValueError("I think that's too much money, pick a smaller amount")
+										if money[interact - 1]["value"] * qty > changeNeeded + 10 or qty > 50: raise ValueError("I think that's too much money, pick a smaller amount")
 										for i in range(qty):
 											cashInHand.append(money[interact - 1]["name"])
 										taken += money[interact - 1]["value"] * qty
