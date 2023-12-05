@@ -1,25 +1,34 @@
-from time import sleep
-from productsAndStock import *
-from people import *
+from classes.productsAndStock import *
+from classes.people import *
+
 from sys import exit
+from time import sleep
+from random import randrange
 
 class MINIMARKET:
 	day = 1
-	money = 500
+	money = 100
 	customersPerShift = 2
+	_instance = None
+
+	def __new__(cls):
+		if not cls._instance:
+			cls._instance = super(MINIMARKET, cls).__new__(cls)
+		return cls._instance
 
 	def tutorialExplanation(self, player):
 		print("TUTORIAL\n")
-		print(f"=> Welcome to your first day of work, {player.name}. Your job is pretty simple, basically justs keep track of the minimarket's stock and process customer payment."),sleep(0.03)
-		print("=> Before you start your shift for the day, you can check the minimarket's stock. You can discard expired items or products that are in bad condition. You can also restock items. If the minimarket runs out of items to sell to customers, you will be fired."),sleep(0.03)
-		print("=> After you have started your shift, all you need to do is to input the items and quantity in the customer's cart into the cashier computer. For example: \n"),sleep(0.03)
-		print("CUSTOMER'S CART:"),sleep(0.03)
-		print("OLIVE OIL 9.95\nOLIVE OIL 9.95\nRICE 15.46\nRICE 15.46\nRICE 15.46\n"),sleep(0.03)
-		print("=> That means the customer has 2 olive oil and 3 rice in their cart. Don't worry, our state-of-the-art cashier computer will make it easy for you."),sleep(0.03)
-		print("=> Then once you're done inputting everything into the computer and calculating the total, the customer will pay the total in cash and you have to return the correct change."),sleep(0.03)
-		print("=> For example, if the total is $12.50 and the customer pays $15, that means you have to return two $1 bills and one 50 cent coin"),sleep(0.03)
-		print("=> You are not allowed to make 3 mistakes per shift, or you're fired"),sleep(0.03)
-		print("=> The longer you play, you will be able to unlock more products and have bigger capacity to restock more items"),sleep(0.03)
+		print(f"=> Welcome to your first day of work, {player.name}. Your job is pretty simple, basically justs keep track of the minimarket's stock and process customer payment."),sleep(0.3)
+		print("=> Before you start your shift for the day, you can check the minimarket's stock. You can discard expired items or products that are in bad condition. You can also restock items. If the minimarket runs out of items to sell to customers, you will be fired."),sleep(0.3)
+		print("=> After you have started your shift, all you need to do is to input the items and quantity in the customer's cart into the cashier computer. For example: \n"),sleep(0.3)
+		print("CUSTOMER'S CART:"),sleep(0.3)
+		print("OLIVE OIL 9.95\nOLIVE OIL 9.95\nRICE 15.46\nRICE 15.46\nRICE 15.46\n"),sleep(0.3)
+		print("=> That means the customer has 2 olive oil and 3 rice in their cart. Don't worry, our state-of-the-art cashier computer will make it easy for you."),sleep(0.3)
+		print("=> Then once you're done inputting everything into the computer and calculating the total, the customer will pay the total in cash and you have to return the correct change."),sleep(0.3)
+		print("=> For example, if the total is $12.50 and the customer pays $15, that means you have to return two $1 bills and one 50 cent coin"),sleep(0.3)
+		print("=> You are not allowed to make 3 mistakes per shift, or you're fired"),sleep(0.3)
+		print("=> You'll also get fired if the minimarket's money reaches below 0")
+		print("=> The more you play, you will be able to unlock new products and have bigger capacity to restock more items"),sleep(0.3)
 		print(f"=> And of course, you are allowed to quit anytime, {player.name}, by simply picking 'resign' in the menu")
 		sleep(2.5)
 		print("=> I think that's it for the tutorial, good luck.")
@@ -100,8 +109,7 @@ class MINIMARKET:
 				print(str(e))
 
 		while True:
-			sleep(0.3)
-			print()
+			print(), sleep(0.3)
 			print(f"DAY {self.day}")
 			print("="*(4+len(str(self.day))))
 			print()
@@ -119,7 +127,10 @@ class MINIMARKET:
 
 			# check stock
 			if interact == 1:
-				stock.displayStock()
+				self.money = stock.displayStock(self.money)
+				if self.money < 0:
+					print("\nYou have wasted all of our money. You're fired >:(")
+					self.stats()
 
 			# shift starts and customers come in
 			elif interact == 2:
@@ -130,7 +141,8 @@ class MINIMARKET:
 
 				for customer in generateCustomers:
 					if not customer.fillCart(stock):
-						print("There are not enough products for the customers, you're fired :/")
+						sleep(0.4)
+						print("Uh oh, it seems there are not enough products for the customers, you're fired >:(")
 						self.stats()
 					print(f"Customer {idx} out of {self.customersPerShift}")
 					mistake = player.ProcessPayment(customer, stock, mistake)
@@ -138,13 +150,28 @@ class MINIMARKET:
 					idx += 1
 					print()
 
+				yay = randrange(60,151)
+				bon = 0
+				print("Great job! You have done well this shift, here's your reward"), sleep(0.3)
+				print(f"Money Earned today: ${yay}"), sleep(0.3)
+				if mistake == 0:
+					bon = randrange(10,76)
+					print(f"Bonus (no mistakes during shift) : ${bon}"), sleep(0.3)
+				self.money += yay + bon
+				sleep(2)
+
 				# NAIK LEVEL
 				self.day += 1
+				stock.expire()
 				if self.day in [2, 3, 5, 6, 7]:
 					stock.unlocked += 1
-					#INSERT KODE HERE UTK GENERATE PRODUK BARU
+					stock.generateProducts(stock.unlocked - 1, randrange(6,9))
+					print(f"\nNEW PRODUCT UNLOCKED <{stock.shelf[stock.unlocked-1][0].name}> ! CHECK YOUR STOCK"), sleep(0.3)
 				self.customersPerShift += 2
-				stock.maxCapacity += 1
+				stock.maxCapacity += 2
+				print(f"Product max capacity has increased by 2, you can now store up to {stock.maxCapacity} items per product"),sleep(0.3)
+				print("Don't forget to restock your items before your next shift starts!"), sleep(1.5)
+				input("\n(PRESS ENTER TO CONTINUE TO THE NEXT DAY...)")
 
 			# elif interact == 3:
 			#     #nanti aku mau tampilin progress si player sini
