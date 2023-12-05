@@ -18,13 +18,16 @@ class Customer:
 						if taken == 0: return False
 						else: break
 				x = randrange(min(available),max(available) + 1) - 1 #produk yang akan diambil customer
-
 				tmp = stock.shelf[x]
 				i = 0
-				while tmp[i].condition == "BAD":
+				condition = lambda x : tmp[x].condition == "BAD" 
+				exp = lambda x : tmp[x].expDate == "EXPIRED" if tmp[x].__class__.__name__ == "Consumable" else False
+				while (condition(i) or exp(i)):
 					i += 1
-					if i >= len(tmp): return False
-				# JGN LUPA BIKIN KONDISI UTK EXPIRED PNY
+					if i >= len(tmp): break
+				if i >= len(tmp):
+					available.remove(x + 1)
+					continue
 				self.cart.append(tmp[i])
 				stock.removeProducts(x, i)
 				taken += 1
@@ -38,7 +41,7 @@ class Customer:
 		print("Customer's items:")
 		sleep(0.3)
 		for i in self.cart:
-			print("{:<10} {:<10} {:<10} {:<4}".format(i.code, i.name, i.price, i.condition))
+			print("{:<10} {:<10} {:<10} {:<4} {:<10}".format(i.code, i.name, i.price, i.condition, i.expDate))
 			sleep(0.3)
 		return ""
 	
@@ -67,8 +70,8 @@ class Employee:
 			items = {i.name : 0 for i in customer.cart}
 			for i in customer.cart: items[i.name] += 1
 
-			allItems = [stock.shelf[i][0].name for i in range(stock.unlocked)]
-			allPrices = [stock.shelf[i][0].price for i in range(stock.unlocked)]
+			allItems = [stock.products[i]["name"] for i in range(stock.unlocked)]
+			allPrices = [stock.products[i]["price"] for i in range(stock.unlocked)]
 
 			print()
 			sleep(0.3)
@@ -82,13 +85,13 @@ class Employee:
 
 			receipts = []
 
-			customerItems = { i : 0 for i in list(items.keys())}
+			customerItems = { i : 0 for i in list(items.keys()) }
 
 			while mistake < 5:
 				while len(receipts) != len(customerItems):
 					try: 
 						possibleErrors = [
-							"Please input a number",
+							f"Please input a number between 1-{stock.unlocked}",
 							"The customer does not have that product in their cart",
 							"That is the wrong number of quantity of this item",
 							"You have already input that product before."
@@ -96,6 +99,7 @@ class Employee:
 						idx = 0
 						if mistake >= 3: return mistake
 						it = int(input(f"PRODUCT (1 - {stock.unlocked}) : "))
+						if not 1 <= it <= stock.unlocked: raise ValueError
 						if allItems[it - 1] not in customerItems:
 							idx = 1
 							raise ValueError
@@ -138,7 +142,7 @@ class Employee:
 			print("="*75)
 
 			# PROSES PENGEMBALIAN
-			customerPaid = randrange(math.ceil(total) + abs(10 - math.floor(total)), math.ceil(total + 25)) + (randrange(0,100) / 100)
+			customerPaid = randrange(math.ceil(total) + 1, math.ceil(total + 20)) + (randrange(0,100) / 100)
 			print(f"\nCUSTOMER'S CASH : ${customerPaid}\n")
 			print("\nGive the customer the correct amount of change to finish the payment.")
 			changeNeeded = (customerPaid - total)
@@ -185,25 +189,26 @@ class Employee:
 								unit = "bills" if interact > 5 else "coins"
 								while True:
 									try:
-										print(f"How many {money[interact - 1]['name']} {unit} do you want to take from the cash register?")
+										print(f"\nHow many {money[interact - 1]['name']} {unit} do you want to take from the cash register? (Pick '0' to cancel)")
 										qty = int(input("=> "))
-										if not 1 <= qty : raise ValueError("Input a number greater than or equal to 1")
-										if money[interact - 1]["value"] * qty > changeNeeded * 10: raise ValueError("I think that's too much than neccessary, pick a smaller number")
+										if not 0 <= qty : raise ValueError("Input a number greater than or equal to 0")
+										if qty == 0: break
+										if money[interact - 1]["value"] * qty > changeNeeded + 10: raise ValueError("I think that's too much money, pick a smaller amount")
 										for i in range(qty):
 											cashInHand.append(money[interact - 1]["name"])
 										taken += money[interact - 1]["value"] * qty
 										break
 									except ValueError as e:
 										print(str(e) + "\n")
-								break
+								if qty != 0: break
 							except ValueError:
 								pass
 					
 					elif action == 2:
 						tmp = {}
 						for i in range(len(cashInHand)) : tmp[i+1] = cashInHand[i]
-						for x, y in tmp.items():
-							print(f"{x}. {y}")
+						print()
+						for x, y in tmp.items(): print(f"{x}. {y}")
 						print(f"\nWhich dollar bill/coin do you want to put back into the cash register (1-{len(cashInHand)})? or pick '0' to go back to the previous menu.")
 						while True:
 							try:
