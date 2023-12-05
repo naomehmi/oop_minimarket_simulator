@@ -166,8 +166,8 @@ class MINIMARKET:
 				if self.day in [2, 3, 5, 6, 7]:
 					stock.unlocked += 1
 					stock.generateProducts(stock.unlocked - 1, randrange(6,9))
-					print(f"\nNEW PRODUCT UNLOCKED <{stock.shelf[stock.unlocked-1][0].name}> ! CHECK YOUR STOCK"), sleep(0.3)
-				self.customersPerShift += 2
+					print(f"\nNEW PRODUCT UNLOCKED < {stock.shelf[stock.unlocked-1][0].name} > ! CHECK YOUR STOCK"), sleep(0.3)
+				self.customersPerShift += 2 if self.day % 2 == 0 else 0
 				stock.maxCapacity += 2
 				print(f"Product max capacity has increased by 2, you can now store up to {stock.maxCapacity} items per product"),sleep(0.3)
 				print("Don't forget to restock your items before your next shift starts!"), sleep(1.5)
