@@ -1,6 +1,5 @@
-# oop_sem3_minimarket_simulator
-repository untuk tugas OOP
+# oop_minimarket_simulator
 
-halo gaiz, jadi di github sini kalian bisa salin code-nya baru modif di python kelen, abis itu kode yg udh dimodif disalin balik ke sini terus disave. Jadi bisa kek kerja sama lah gt tanpa kumpul2 di 1 tmpt. di file `rough_draft_ideas.md` itu aku udah tulis rough draft kira2 mau gimana aplikasi kita. Kalian boleh tambah2 ide kalian juga kalo ada. Kalo mau diskusi di grup wa aja. utk file `code_notes.md`, itu buat jelasin bagian kode kalian biar kita semua ngerti.
+## brief description
 
-nnt kita ada 2 file python ya, 1 file utk class nya semua, 1 lg program utamanya.
+for our object oriented programming assignment, we have madee a fun and simple minimarket simulator where the player can control stock items, and process customer payment. In this game, player can learn how to manage money and inventory, and try their best to be the best employee without getting fired. we have implemented inheritance, abstract classes, iterator patterns, and various design patterns.
