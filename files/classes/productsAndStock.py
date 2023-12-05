@@ -96,11 +96,16 @@ class Stock:
 		for i in self._listOfProducts:
 			if not i: break
 			if i[0].__class__.__name__ == "Consumable":
-				for j in i:
-					if j.expDate != "EXPIRED" :
-						day = int(j.expDate[:2].rstrip()) - 1 # take the number of days left from .expDate and convert it to int
-						j.expDate = "EXPIRED" if day <= 0 else str(day) + " days" # product becomes expired after reaching 0 days
-						if j.expDate == "EXPIRED" : j.condition = "EXPIRED" # condition becomes bad if item is expired
+				item = iter(i)
+				while True:
+					try:
+						j = next(item)
+						if j.expDate != "EXPIRED" :
+							day = int(j.expDate[:2].rstrip()) - 1 # take the number of days left from .expDate and convert it to int
+							j.expDate = "EXPIRED" if day <= 0 else str(day) + " days" # product becomes expired after reaching 0 days
+							if j.expDate == "EXPIRED" : j.condition = "EXPIRED" # condition becomes bad if item is expired
+					except StopIteration:
+						break
 
 	# stock control
 	def displayStock(self, money):
@@ -138,8 +143,7 @@ class Stock:
 				print(f"PRICE : ${'%.2f' % self._allProducts[idx]['cost']}/{self._allProducts[idx]['uom']}")
 				print("-"*34,end="")
 				if className == "Consumable": print("-"*16,end="")
-				print()
-				print("|{:^3}|{:^15}|".format("No.","Product Code"),end="")
+				print("\n|{:^3}|{:^15}|".format("No.","Product Code"),end="")
 				if className == "Consumable": print("{:^15}|".format("Expiry Date"),end="")
 				print("{:^12}|".format("Condition"))
 				print("|{:^3}|{:^15}|".format("-"*3,"-"*15),end="")
@@ -148,11 +152,16 @@ class Stock:
 				j = 1
 				prod = self._listOfProducts[idx]
 				amt = len(prod)
-				for i in prod: # print items
-					print("|{:^3}|{:^15}|".format(j,i.code),end="")
-					if className == "Consumable": print("{:^15}|".format(i.expDate),end="")
-					print("{:^12}|".format(i.condition))
-					j += 1
+				iterator = iter(prod)
+				while True: # print items
+					try:
+						i = next(iterator)
+						print("|{:^3}|{:^15}|".format(j,i.code),end="")
+						if className == "Consumable": print("{:^15}|".format(i.expDate),end="")
+						print("{:^12}|".format(i.condition))
+						j += 1
+					except StopIteration:
+						break
 				print("-"*34,end="")
 				if className == "Consumable": print("-"*16,end="")
 				print("\nWhat would you like to do?")
