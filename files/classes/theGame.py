@@ -25,7 +25,7 @@ class MINIMARKET:
 		print("OLIVE OIL 9.95\nOLIVE OIL 9.95\nRICE 15.46\nRICE 15.46\nRICE 15.46\n"),sleep(0.3)
 		print("=> That means the customer has 2 olive oil and 3 rice in their cart. Don't worry, our state-of-the-art cashier computer will make it easy for you."),sleep(0.3)
 		print("=> Then once you're done inputting everything into the computer and calculating the total, the customer will pay the total in cash and you have to return the correct change."),sleep(0.3)
-		print("=> For example, if the total is $12.50 and the customer pays $15, that means you have to return two $1 bills and one 50 cent coin"),sleep(0.3)
+		print("=> For example, if the total is $12.50 and the customer pays $15, that means you have to return two 1 dollar bills and one 50 cent coin"),sleep(0.3)
 		print("=> You are not allowed to make 3 mistakes per shift, or you're fired"),sleep(0.3)
 		print("=> You'll also get fired if the minimarket's money reaches below 0")
 		print("=> The more you play, you will be able to unlock new products and have bigger capacity to restock more items"),sleep(0.3)
