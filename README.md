@@ -37,7 +37,7 @@ for our object oriented programming project, we have made a fun and simple minim
   - once they have picked a row number, the program will show the player all the items of that product, ranging from their code, name, expiry date, and condition. here, the player can add more items into the stock or discard products that are in bad condition or expired
   - the game will end if the player runs out of money
   - the game will end if there are not enough products for customers during the level
-- if the player decide to start a level, certain amount of customers will come and fill their shopping cart, and then begin the payment process with the player
+- if the player decides to start a level, certain amount of customers will come and fill their shopping cart, and then begin the payment process with the player
   - the player will see the contents of the customer's shopping cart, then input the product and quantity into the cashier computer
   - a receipt will show all the products that the customer has bought and the total cost
   - the customer will pay in a certain amount of cash, if it's more than the total cost, the player has to give back the correct change to the customer
@@ -94,5 +94,15 @@ for our object oriented programming project, we have made a fun and simple minim
         3. if the item is not expired yet, take the number of days, convert it into an integer then subtract it by 1
         4. if it's already 0 days left, change the expDate to 'EXPIRED'
     - `displayStock(money)`
-      -  to show overview of products in the minimarket
+      - to show overview of products in the minimarket
+      - how it works:
+        1. print the products that the player has unlocked so far in a table format, showing the product name, how many items left, and the price per unit of each item
+        2. the player can either return to the previous menu by inputting '0', or pick which product that the player wants to check in detail which then leads to `restockItems(idx, money)` => idx is the row number of the product that the player wants to check
+        3. if the player runs out of money, the game ends
+    - `restockItems(idx, money)`
+      - to buy more or discard items of a product
+      - how it works:
+        1. print each item of product in table format
+        2. player is given 3 options, if the player inputs '1' they can add more items into the stock, if the player inputs '2' they can discard items, and if the player input '3' they can go back to the previous menu
+        3. 
 \(readme not done yet)
