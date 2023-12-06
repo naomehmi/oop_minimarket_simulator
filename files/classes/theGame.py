@@ -13,6 +13,8 @@ class MINIMARKET:
 		self.customersPerShift = 2 # the amount of customers per level
 		self.stock = Stock() # stock of the entire minimarket
 		self.player = Employee() # player
+		self.minReward = 80 # the lowest possible value for a reward after completing a shift
+		self.maxReward = 151 # the highest possible value for a reward after completing a shift
 		
 	# tutorial
 	def tutorialExplanation(self):
@@ -156,6 +158,8 @@ class MINIMARKET:
 					print(f"\nNEW PRODUCT UNLOCKED < {self.stock.shelf[self.stock.unlocked-1][0].name} > ! CHECK YOUR STOCK"), sleep(0.3)
 				self.customersPerShift += 2 if self.day % 2 == 0 else 0 # the amount of customers per level increment by 2 if the level is even
 				self.stock.maxCapacity += 2 # the max capacity of each product is increased by 2
+				self.minReward += 5 # minimum value for rewards increment by 5
+				self.maxReward += 5 # maximum value for rewards increment by 5
 				print(f"Product max capacity has increased by 2, you can now store up to {self.stock.maxCapacity} items per product"),sleep(0.3)
 				print("Don't forget to restock your items before your next shift starts!"), sleep(1.5)
 				input("\n(PRESS ENTER TO CONTINUE TO THE NEXT DAY...)")
