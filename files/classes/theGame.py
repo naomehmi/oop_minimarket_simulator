@@ -9,7 +9,7 @@ class MINIMARKET:
 	# facade pattern
 	def __init__(self):
 		self.day = 1 # level
-		self.money = 75 # starter money
+		self.money = 100 # starter money
 		self.customersPerShift = 2 # the amount of customers per level
 		self.stock = Stock() # stock of the entire minimarket
 		self.player = Employee() # player
@@ -28,9 +28,9 @@ class MINIMARKET:
 		print("=> Then once you're done inputting everything into the computer and calculating the total, the customer will pay the total in cash and you have to return the correct change."),sleep(0.3)
 		print("=> For example, if the total is $12.50 and the customer pays $15, that means you have to return two 1 dollar bills and one 50 cent coin"),sleep(0.3)
 		print("=> You are not allowed to make 3 mistakes per shift, or you're fired"),sleep(0.3)
-		print("=> If the minimarket does not have enough items to sell, you're fired!"), sleep(0.03)
 		print("=> You'll also get fired if the minimarket's money reaches below 0")
 		print("=> The more you play, you will be able to unlock new products and have bigger capacity to restock more items"),sleep(0.3)
+		print("=> if the minimarket does not have enough items to sell, you're fired!"), sleep(0.03)
 		print(f"=> And of course, you are allowed to quit anytime, {self.player.name}, by simply picking 'resign' in the menu")
 		sleep(2.5)
 		print("=> I think that's it for the tutorial, good luck.")
@@ -137,11 +137,14 @@ class MINIMARKET:
 						print("Uh oh, it seems there are not enough products for the customers, you're fired >:(")
 						self.stats(2)
 					print(f"Customer {idx} out of {self.customersPerShift}")
+					print("\nScanning items",end=""), sleep(0.6)
+					for i in range(3): print(".",end=""), sleep(0.6)
+					print()
 					mistake = self.player.ProcessPayment(customer, self.stock, mistake) # triggers cashier game, returns the amount of mistake the players have
 					if mistake == 3: print(f"=> Ah. You have made 3 mistakes. You're fired, {self.player.name}"), self.stats(3) # fired if mistake = 3
 					idx += 1
 					print()
-				yay = randrange(80,251) # reward randomized
+				yay = randrange(self.minReward, self.maxReward) # reward randomized
 				bon = 0
 				print("Great job! You have done well this shift, here's your reward"), sleep(0.3)
 				print(f"Money Earned today: ${yay}"), sleep(0.3)
@@ -153,7 +156,7 @@ class MINIMARKET:
 				# LEVEL UP
 				self.day += 1 # level + 1
 				self.stock.expire() # every consumable product's expiry date -1
-				if self.day in [2, 3, 5, 6, 7]: # if player reaches a certain level, they unlock a new product
+				if self.day in [2, 3, 5, 6, 7, 9]: # if player reaches a certain level, they unlock a new product
 					self.stock.unlocked += 1
 					self.stock.generateProducts(self.stock.unlocked - 1, randrange(6,9))
 					print(f"\nNEW PRODUCT UNLOCKED < {self.stock.shelf[self.stock.unlocked-1][0].name} > ! CHECK YOUR STOCK"), sleep(0.3)
