@@ -48,7 +48,47 @@ for our object oriented programming project, we have made a fun and simple minim
 ## some code explanation
 
 - we added an abstract class `Product` to act as a template for our `Consumable` and `nonConsumable` classes
-- `Consumable` class is used to create instances of products that can be consumed aka they have expiry dates
-- `nonConsumable` class is used to create instances of products that cannot be consumed aka they don't have expiry dates
+  - attributes
+    - code => contains two letters + 4 randomly generated numbers 
+    - name
+    - price
+    - uom => unit of measurement
+    - condition => has a 1 in 9 chance to be _BAD_, other than that _GOOD_
+- `Consumable` class is used to create instances of products that have expiry dates
+  - attributes are inherited from `Product`, and has a new attribute called _expDate_
+- `nonConsumable` class is used to create instances of products that don't have expiry dates
+  - attributes are inherited from `Product`
 - `Stock` class is used to manage all products in the minimarket, it implements the _Observer_ design pattern, where the object that we're observing are both the consumable and non consumable products
-(readme not done yet)
+  - attributes
+    - **_listOfProducts** => a protected attribute that acts as a 'shelf' to store all products, is a 2 dimensional list, where each sublist contains items of each product
+    -  **maxCapacity** => max capacity of every product, so players can't buy too much items at a time
+    -  **unlocked** => the available number of products that the player currently have
+    -  **_allProducts** => a protected attribute that contains every type of product that the minimarket sells, is a 2 dimensional list containing dictionaries, which each key represents:
+        - con => 1 if it's a consumable product, 0 if it's non consumable
+        - code => the two letter code for each product
+        - name
+        - price
+        - uom
+        - expDate (for consumable products)
+        - cost => the cost to stock an individual item of a product
+  - property functions
+    - **shelf()** => to call _listOfProducts outside of the class
+    - **products()** => to call _allProducts outside of the class
+  - methods
+    - `generateProducts(idx, qty)`
+      - to add items of a product into _listOfProducts
+      - how it works
+        1. first we copy the dictionary of the product details and store it into a variable called _tmp_
+        2. _conOrNon_ is a variable that stores the value of the 'con' key from _tmp_ dictionary
+        3. then remove the 'con' and 'cost' keys from _tmp_
+        4. then with a for loop, we append new `Consumable` or `nonConsumable` instances using tmp as **kwargs into _listOfProducts
+    - `removeProducts(idx, row)`
+      - to remove 1 item of a product
+      - how it works
+        1. pop the _row_-th index of _listOfProducts[_idx_]
+    - `expire()`
+      - to decrease the expiration date of every consumable object (observer design pattern to change the state of other objects)
+      - how it works:
+        1. iterate throught _listOfProducts
+        2. 
+\(readme not done yet)
