@@ -89,6 +89,10 @@ for our object oriented programming project, we have made a fun and simple minim
     - `expire()`
       - to decrease the expiration date of every consumable object (observer design pattern to change the state of other objects)
       - how it works:
-        1. iterate throught _listOfProducts
-        2. 
+        1. iterate through _listOfProducts using `iter()` and `next()`
+        2. if the current index of _listOfProducts is a consumable product, iterate it again using `iter()` and `next()`
+        3. if the item is not expired yet, take the number of days, convert it into an integer then subtract it by 1
+        4. if it's already 0 days left, change the expDate to 'EXPIRED'
+    - `displayStock(money)`
+      -  to show overview of products in the minimarket
 \(readme not done yet)
