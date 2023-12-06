@@ -145,7 +145,6 @@ class Stock:
 			try: # format table
 				print("\nMONEY : $" + "%.2f" % money) 
 				print("\nProduct :",prod["name"])
-				print(f"PRICE : ${'%.2f' % self._allProducts[idx]['cost']}/{self._allProducts[idx]['uom']}")
 				print("-"*34,end="")
 				if className == "Consumable": print("-"*16,end="")
 				print("\n|{:^3}|{:^15}|".format("No.","Product Code"),end="")
@@ -186,14 +185,16 @@ class Stock:
 						err = "Please input a number more than 0." # default error message
 						try:
 							print(f"Quantity : {amt}\nCurrent max capacity : {self.maxCapacity}") # quantity of items to buy
+							print(f"Cost to Buy : ${'%.2f' % self._allProducts[idx]['cost']}/{self._allProducts[idx]['uom']}")
 							print("\nHow many products do you want to add?")
 							qty = int(input("=> "))
 							if qty > self.maxCapacity - amt: # cannot buy more than max capacity
 								err = f"You can only buy up to {self.maxCapacity - amt} for now" # change error message
 								raise ValueError
-							money -= self._allProducts[idx]["cost"] * qty # money is subtracted by cost of items
+							cost = self._allProducts[idx]["cost"] * qty
+							money -= cost # money is subtracted by cost of items
 							self.generateProducts(idx, qty) # add the items into the stock
-							print(f"\n=> {qty} product(s) have been added."), sleep(0.8)
+							print(f"(-${'%.2f' % cost})\n\n=> {qty} product(s) have been added."), sleep(0.8)
 							break
 						except ValueError:
 							print(err + "\n")
