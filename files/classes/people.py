@@ -138,7 +138,7 @@ class Employee:
 			lowestMultipleOf5 = math.ceil(total / 5) * 5 # round up the total cost the nearest multiple of 5
 			customerPaid = randrange(lowestMultipleOf5, 10 * ((lowestMultipleOf5 // 10) + 1) + 1, 5) # the customer pays in a randomized amount of dollars between the nearest multiple of 5 up to the nearest multiple of 10
 			print(f"\nCUSTOMER'S CASH : ${customerPaid}\n")
-			if "%.2f" % customerPaid == "%.2f" % total:
+			if "%.2f" % customerPaid == "%.2f" % total: # if customer pays the exact amount of money
 				print("Oh, the customer has paid the exact amount, so no change needed.")
 			else:
 				print("Give the customer the correct amount of change to finish the payment.")
@@ -182,8 +182,8 @@ class Employee:
 									unit = "bills" if interact > 5 else "coins"
 									while True:
 										try:
-											# player picks which type of money to take out from cash register
-											e = "pick a number between 0 - 10" # error message
+											# player picks quantity of the chosen money value to take
+											e = "pick a number above 0" # error message
 											print(f"\nHow many {money[interact - 1]['name']} {unit} do you want to take from the cash register? (Pick '0' to cancel)")
 											qty = int(input("=> "))
 											if not 0 <= qty : raise ValueError(e)
@@ -205,7 +205,7 @@ class Employee:
 							tmp = {}
 							for i in range(len(cashInHand)) : tmp[i+1] = cashInHand[i]
 							print()
-							for x, y in tmp.items(): print(f"{x}. {y}")
+							for x, y in tmp.items(): print(f"{x}. {y}") # print all the money the player has taken out from the cash register
 							print(f"\nWhich dollar bill/coin do you want to put back into the cash register (1-{len(cashInHand)})? or pick '0' to go back to the previous menu.")
 							while True:
 								try:
