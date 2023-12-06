@@ -28,6 +28,7 @@ class MINIMARKET:
 		print("=> Then once you're done inputting everything into the computer and calculating the total, the customer will pay the total in cash and you have to return the correct change."),sleep(0.3)
 		print("=> For example, if the total is $12.50 and the customer pays $15, that means you have to return two 1 dollar bills and one 50 cent coin"),sleep(0.3)
 		print("=> You are not allowed to make 3 mistakes per shift, or you're fired"),sleep(0.3)
+		print("=> If the minimarket does not have enough items to sell, you're fired!"), sleep(0.03)
 		print("=> You'll also get fired if the minimarket's money reaches below 0")
 		print("=> The more you play, you will be able to unlock new products and have bigger capacity to restock more items"),sleep(0.3)
 		print(f"=> And of course, you are allowed to quit anytime, {self.player.name}, by simply picking 'resign' in the menu")
