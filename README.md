@@ -21,7 +21,7 @@ for our object oriented programming project, we have made a fun and simple minim
 
 - products can expire over time, and have a 1 in 9 chance to be in bad condition when added
 - cashier system and receipts
-- the player can take out or put back money into the cash register
+- the player can take out or put back money into cash register
 - stats when the game ends 
 
 ### start of the game
