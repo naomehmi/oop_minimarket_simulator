@@ -93,19 +93,24 @@ class Stock:
 
 	# every consumable product's expiry date minus 1 day
 	def expire(self):
-		for i in self._listOfProducts:
-			if not i: break
-			if i[0].__class__.__name__ == "Consumable":
-				item = iter(i)
-				while True:
-					try:
-						j = next(item)
-						if j.expDate != "EXPIRED" :
-							day = int(j.expDate[:2].rstrip()) - 1 # take the number of days left from .expDate and convert it to int
-							j.expDate = "EXPIRED" if day <= 0 else str(day) + " days" # product becomes expired after reaching 0 days
-							if j.expDate == "EXPIRED" : j.condition = "EXPIRED" # condition becomes bad if item is expired
-					except StopIteration:
-						break
+		iterator = iter(self._listOfProducts)
+		while True:
+			try:
+				i = next(iterator)
+				if not i: break
+				if i[0].__class__.__name__ == "Consumable":
+					item = iter(i)
+					while True:
+						try:
+							j = next(item)
+							if j.expDate != "EXPIRED" :
+								day = int(j.expDate[:2].rstrip()) - 1 # take the number of days left from .expDate and convert it to int
+								j.expDate = "EXPIRED" if day <= 0 else str(day) + " days" # product becomes expired after reaching 0 days
+								if j.expDate == "EXPIRED" : j.condition = "EXPIRED" # condition becomes bad if item is expired
+						except StopIteration:
+							break
+			except StopIteration:
+				break
 
 	# stock control
 	def displayStock(self, money):
