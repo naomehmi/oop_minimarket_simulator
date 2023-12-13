@@ -51,6 +51,7 @@ class Employee:
 		self.name = "" # leave blank when instantialized
 
 	def EmployeeNameCheck(self): # recursive function to validate employee name
+			print("\n\n=> Before we start, what's your name? (Numbers, spaces, and symbols are not allowed)")
 			try:
 				name = input("=> ")
 				if not name.isalpha():
@@ -58,7 +59,7 @@ class Employee:
 			except ValueError as e:
 				print(str(e))
 				return self.EmployeeNameCheck()
-			return name.title()
+			self.name = name.title()
 	
 	# cashier process
 	def ProcessPayment(self, customer, stock, mistake):
