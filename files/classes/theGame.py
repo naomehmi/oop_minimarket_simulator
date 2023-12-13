@@ -83,19 +83,14 @@ class MINIMARKET:
 		# loading screen
 		print("\n{:^74}".format("Loading..."))
 		print("{:^22}".format(" "),end="")
-		for i in range(30):
-			print("∎",end="")
-			sleep(0.02)
-		print("\n\n")
+		for i in range(30): print("∎",end=""), sleep(0.02)
 		# default products at the start of the game, 8 apples and 10 milk
 		self.stock.generateProducts(0, 8)
 		self.stock.generateProducts(1, 10)
 		# player name
-		print("=> Before we start, what's your name? (Numbers, spaces, and symbols are not allowed)")
-		self.player.name = self.player.EmployeeNameCheck()
-		print()
-		# show player tutorial y/n
-		print(f"=> Would you like to read the tutorial, {self.player.name}? (Y/N)")
+		self.player.EmployeeNameCheck()
+		# show player tutorial yay or nay
+		print(f"\n=> Would you like to read the tutorial, {self.player.name}? (Y/N)")
 		while True:
 			try:
 				interact = input("=> ").lower()
@@ -109,8 +104,7 @@ class MINIMARKET:
 			print(), sleep(0.3)
 			print(f"DAY {self.day}")
 			print("="*(4+len(str(self.day))))
-			print()
-			print("1. Check Minimarket's Stock"), sleep(0.3) # check stock before shift starts
+			print("\n1. Check Minimarket's Stock"), sleep(0.3) # check stock before shift starts
 			print("2. Start shift"), sleep(0.3) # begin serving customers
 			print("3. Resign"), sleep(0.3) # quit
 			print("Pick an option (1/2/3).\n"), sleep(0.3)
@@ -177,7 +171,7 @@ class MINIMARKET:
 		comment = ["Caused the minimarket bankruptcy", "Was too lazy to restock the minimarket", "Bad customer service", "Probably got bored on the job"]
 		print("\nGAME OVER")
 		print("="*9)
-		print("Days Played\t\t:",self.day)
+		print("\nDays Played\t\t:",self.day)
 		print("Employee Code\t\t:",self.player.code)
 		print("Name\t\t\t:",self.player.name)
 		print("Status\t\t\t:",status)
