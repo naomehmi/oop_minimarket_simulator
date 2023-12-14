@@ -1,22 +1,27 @@
 from time import sleep
 from random import randrange
-import abc
+from abc import ABC, abstractmethod
 
 # abstract class as template for consumable and non consumable (template pattern??)
-class Product(metaclass=abc.ABCMeta):
-	@abc.abstractproperty
+class Product(ABC):
+	@property
+	@abstractmethod
 	def code(self):
 		pass
-	@abc.abstractproperty
+	@property
+	@abstractmethod
 	def name(self):
 		pass
-	@abc.abstractproperty
+	@property
+	@abstractmethod
 	def price(self):
 		pass
-	@abc.abstractproperty
+	@property
+	@abstractmethod
 	def uom(self):
 		pass
-	@abc.abstractproperty
+	@property
+	@abstractmethod
 	def condition(self):
 		pass
 
@@ -56,8 +61,8 @@ class Stock:
 	maxCapacity = 10 # maximum amount of items per product, will increase as player levels up
 	unlocked = 2 # the types of products that the minimarket sells for now, will increase as player levels up
 	_allProducts = [
-		{ "con" : 1 ,"code" : "AP", "name" : "APPLE", "price" : 3.00, "uom" : "PCS", "expDate" : "7 days", "cost" : 2.30 }, 
-		{ "con" : 1 ,"code" : "MK", "name" : "MILK", "price" : 3.45, "uom" : "PCS", "expDate" : "7 days", "cost" : 2.95 }, 
+		{ "con" : 1 ,"code" : "AP", "name" : "APPLE", "price" : 3.00, "uom" : "PCS", "expDate" : "5 days", "cost" : 2.30 }, 
+		{ "con" : 1 ,"code" : "MK", "name" : "MILK", "price" : 3.45, "uom" : "PCS", "expDate" : "6 days", "cost" : 2.95 }, 
 		{ "con" : 1 ,"code" : "EG", "name" : "EGGS", "price" : 7.50, "uom" : "CARTONS", "expDate" : "10 days", "cost" : 6.68 }, 
 		{ "con" : 0 ,"code" : "TS", "name" : "TISSUE", "price" : 5.00, "uom" : "PCS", "cost" : 4.40 }, 
 		{ "con" : 1 ,"code" : "OV", "name" : "OLIVE OIL", "price" : 9.95, "uom" : "BOTTLE" , "expDate" : "15 days", "cost" : 7.77 }, 
