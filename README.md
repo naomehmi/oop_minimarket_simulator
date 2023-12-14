@@ -4,7 +4,7 @@ status: in progress
 
 ## brief description
 
-for our object oriented programming project, we have made a fun and simple minimarket simulator where the player can control stock items and process customer payment. In this game, player can learn how to manage money and inventory, and try their best to be the best employee without getting fired. we have implemented inheritance, abstract classes, iterator patterns, and various design patterns in our project.
+for our object oriented programming project, we have made a fun and simple minimarket simulator where the player can control stock items and process customer payment. In this game, the player can learn how to manage money and inventory, and try their best to be the best employee without getting fired. we have implemented inheritance, abstract classes, iterator patterns, and various design patterns in our project.
 
 ## grading parameters
 
@@ -62,7 +62,7 @@ for our object oriented programming project, we have made a fun and simple minim
   - attributes
     - **_listOfProducts** => a protected attribute that acts as a 'shelf' to store all products, is a 2 dimensional list, where each sublist contains items of each product
     -  **maxCapacity** => max capacity of every product, so players can't buy too much items at a time
-    -  **unlocked** => the available number of products that the player currently have
+    -  **unlocked** => the available number of products that the player currently has
     -  **_allProducts** => a protected attribute that contains every type of product that the minimarket sells, is a 2 dimensional list containing dictionaries, which each key represents:
         - con => 1 if it's a consumable product, 0 if it's non consumable
         - code => the two letter code for each product
