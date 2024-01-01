@@ -18,7 +18,7 @@ class MINIMARKET:
 		
 	# tutorial
 	def tutorialExplanation(self):
-		print("TUTORIAL\n")
+		print("\nTUTORIAL\n")
 		print(f"=> Welcome to your first day of work, {self.player.name}. Your job is pretty simple, basically just keep track of the minimarket's stock and process customer payment."),sleep(0.3)
 		print("=> Before you start your shift for the day, you can check the minimarket's stock. You can discard expired items or products that are in bad condition. You can also restock items. If the minimarket runs out of items to sell to customers, you will be fired."),sleep(0.3)
 		print("=> After you have started your shift, all you need to do is to input the items and quantity in the customer's cart into the cashier computer. For example: \n"),sleep(0.3)
@@ -117,25 +117,22 @@ class MINIMARKET:
 			# check stock
 			if interact == 1:
 				self.money = self.stock.displayStock(self.money)  # check stock, returns money. if money < 0 game over
-				if self.money < 0:
-					print("\nYou have wasted all of our money. You're fired >:(")
-					self.stats(1)
+				if self.money < 0: print("\nYou have wasted all of our money. You're fired >:("), self.stats(1)
 			# shift starts and customers come in
 			elif interact == 2:
-				generateCustomers = [Customer() for i in range(self.customersPerShift)] # customers per shift
+				generateCustomers = [Customer() for _ in range(self.customersPerShift)] # customers per shift
 				idx = 1
 				mistake = 0 # player cannot make more than 3 mistakes per level
 				for customer in generateCustomers:
 					if not customer.fillCart(self.stock): # if there are not enough items for customer to add in their cart, player gets fired
 						sleep(0.4)
-						print("Uh oh, it seems there are not enough products for the customers, you're fired >:(")
-						self.stats(2)
+						print("Uh oh, it seems there are not enough products for the customers, you're fired >:("), self.stats(2)
 					print(f"Customer {idx} out of {self.customersPerShift}")
 					print("\nScanning items",end=""), sleep(0.6)
-					for i in range(3): print(".",end=""), sleep(0.6)
+					for _ in range(3): print(".",end=""), sleep(0.6)
 					print()
 					mistake = self.player.ProcessPayment(customer, self.stock, mistake) # triggers cashier game, returns the amount of mistake the players have
-					if mistake == 3: print(f"=> Ah. You have made 3 mistakes. You're fired, {self.player.name}"), self.stats(3) # fired if mistake = 3
+					if mistake == 3: print(f"=> Ah. You have made 3 mistakes. You're fired, {self.player.name}"), self.stats(3) # fired if mistake = 3, game stops
 					idx += 1
 					print()
 				yay = randrange(self.minReward, self.maxReward) # reward randomized
@@ -143,7 +140,7 @@ class MINIMARKET:
 				print("Great job! You have done well this shift, here's your reward"), sleep(0.3)
 				print(f"Money Earned today: ${yay}"), sleep(0.3)
 				if mistake == 0: # player gets additional money if they did not make any mistakes
-					bon = randrange(10,76)
+					bon = randrange(20,81)
 					print(f"Bonus (no mistakes during shift) : ${bon}"), sleep(0.3)
 				self.money += yay + bon
 				sleep(2)
@@ -154,17 +151,16 @@ class MINIMARKET:
 					self.stock.unlocked += 1
 					self.stock.generateProducts(self.stock.unlocked - 1, randrange(6,9))
 					print(f"\nNEW PRODUCT UNLOCKED < {self.stock.shelf[self.stock.unlocked-1][0].name} > ! CHECK YOUR STOCK"), sleep(0.3)
-				self.customersPerShift += 2 if self.day % 2 == 0 else 0 # the amount of customers per level increment by 2 if the level is even
+				self.customersPerShift += 2 if self.day % 2 == 0 else 0 # the amount of customers per level increments by 2 if the level is an even number
 				self.stock.maxCapacity += 2 # the max capacity of each product is increased by 2
-				self.minReward += 5 # minimum value for rewards increment by 5
-				self.maxReward += 5 # maximum value for rewards increment by 5
+				self.minReward += 5 # minimum value for rewards increments by 5
+				self.maxReward += 5 # maximum value for rewards increments by 5
 				print(f"Product max capacity has increased by 2, you can now store up to {self.stock.maxCapacity} items per product"),sleep(0.3)
 				print("Don't forget to restock your items before your next shift starts!"), sleep(1.5)
 				input("\n(PRESS ENTER TO CONTINUE TO THE NEXT DAY...)")
 			# player quits
 			elif interact == 3:
-					print(f"Aw, well it was nice meeting you, {self.player.name}. Don't come back.")
-					self.stats(4)
+				print(f"Aw, well it was nice meeting you, {self.player.name}. Don't come back."), self.stats(4)
 	# shows stats of player's progress and the reason why the game is over
 	def stats(self, reason):
 		status = "Resigned" if reason == 4 else "FIRED"
@@ -176,5 +172,5 @@ class MINIMARKET:
 		print("Name\t\t\t:",self.player.name)
 		print("Status\t\t\t:",status)
 		print("Reason\t\t\t:",comment[reason - 1])
-		print("\nTHANK YOU SO MUCH FOR PLAYING MINIMARKET SIMULATOR!")
+		print("\nTHANK YOU SO MUCH FOR PLAYING MINIMARKET SIMULATOR!\n")
 		exit()
