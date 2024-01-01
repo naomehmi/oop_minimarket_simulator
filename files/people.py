@@ -136,7 +136,7 @@ class Employee:
 			print("="*75)
 
 			# payment
-			lowestMultipleOf5 = math.ceil(total / 5) * 5 # round up the total cost the nearest multiple of 5
+			lowestMultipleOf5 = math.ceil(total / 5) * 5 # round up the total cost to the nearest multiple of 5
 			customerPaid = randrange(lowestMultipleOf5, 10 * ((lowestMultipleOf5 // 10) + 1) + 1, 5) # the customer pays in a randomized amount of dollars between the nearest multiple of 5 up to the nearest multiple of 10
 			print(f"\nCUSTOMER'S CASH : ${customerPaid}\n")
 			if "%.2f" % customerPaid == "%.2f" % total: # if customer pays the exact amount of money
