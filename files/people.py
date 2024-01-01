@@ -2,7 +2,6 @@ import math
 from datetime import datetime
 from time import sleep
 from random import randrange
-from abc import ABC, abstractmethod
 
 # customer class
 class Customer:
