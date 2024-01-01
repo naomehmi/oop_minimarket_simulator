@@ -12,7 +12,7 @@ for our object oriented programming project, we have made a fun and simple minim
 [x] try and exception\
 [x] iterator pattern\
 [x] design pattern\
-[ ] testing\
+[x] testing\
 [ ] solid
 
 ## features / how it works
