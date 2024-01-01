@@ -1,5 +1,5 @@
-from classes.productsAndStock import *
-from classes.people import *
+from productsAndStock import *
+from people import *
 
 from sys import exit
 from time import sleep
@@ -83,7 +83,7 @@ class MINIMARKET:
 		# loading screen
 		print("\n{:^74}".format("Loading..."))
 		print("{:^22}".format(" "),end="")
-		for i in range(30): print("∎",end=""), sleep(0.02)
+		for _ in range(30): print("∎",end=""), sleep(0.02)
 		# default products at the start of the game, 8 apples and 10 milk
 		self.stock.generateProducts(0, 8)
 		self.stock.generateProducts(1, 10)
