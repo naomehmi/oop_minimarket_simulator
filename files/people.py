@@ -48,7 +48,6 @@ class Customer:
 class Employee:
 	def __init__(self):
 		self.code = "EMPLOYEE"+str(randrange(1000,10000)) # randomized employee code
-		self.name = "" # leave blank when instantialized
 
 	def EmployeeNameCheck(self): # recursive function to validate employee name
 			print("\n\n=> Before we start, what's your name? (Numbers, spaces, and symbols are not allowed)")
