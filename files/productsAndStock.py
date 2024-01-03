@@ -111,7 +111,7 @@ class Stock:
 							if j.expDate != "EXPIRED" :
 								day = int(j.expDate[:2].rstrip()) - 1 # take the number of days left from .expDate and convert it to int
 								j.expDate = "EXPIRED" if day <= 0 else str(day) + " days" # product becomes expired after reaching 0 days
-								if j.expDate == "EXPIRED" : j.condition = "EXPIRED" # condition becomes bad if item is expired
+								if j.expDate == "EXPIRED" : j.condition = "BAD" # condition becomes bad if item is expired
 						except StopIteration:
 							break
 			except StopIteration:
