@@ -1,10 +1,10 @@
 # oop_minimarket_simulator
 
-status: in progress
+status: in progress (80%)
 
 ## brief description
 
-for our object oriented programming project, we have made a fun and simple minimarket simulator where the player can control stock items and process customer payment. In this game, the player can learn how to manage money and inventory, and try their best to be the best employee without getting fired. we have implemented inheritance, abstract classes, iterator patterns, and various design patterns in our project.
+for our object oriented programming project, we have made a fun and simple minimarket simulator where the player can control stock items and process customer payment. In this game, the player can learn how to manage money and inventory, and try their best to be the best employee without getting fired. we have implemented inheritance, abstract classes, iterator patterns, and various design patterns into our project.
 
 ## grading parameters
 
@@ -22,7 +22,7 @@ for our object oriented programming project, we have made a fun and simple minim
 - products can expire over time, and have a 1 in 9 chance to be in bad condition when added
 - cashier system and receipts
 - the player can take out or put back money into cash register
-- stats when the game ends 
+- player stats when the game ends 
 
 ### start of the game
 
@@ -32,8 +32,8 @@ for our object oriented programming project, we have made a fun and simple minim
 
 ### main game
 
-- before a level (shift) starts, the player is given 3 options: check minimarket stock/inventory, start the level, or resign (quit)
-- if the player picks checking stock, the program will show them a brief overview of the products they currently have, and they can either pick '0' to return to the previous menu or pick the row number of a product that they want to check to see each items of that product
+- before a level (shift) starts, the player is given 3 options: to check the minimarket's stock/inventory, to start the level, or to resign (quit)
+- if the player chooses to check stock, the program will show them a brief overview of the products they currently have, and they can either pick '0' to return to the previous menu or pick the row number of a product that they want to check to see each item of that product
   - once they have picked a row number, the program will show the player all the items of that product, ranging from their code, name, expiry date, and condition. here, the player can add more items into the stock or discard products that are in bad condition or expired
   - the game will end if the player runs out of money
   - the game will end if there are not enough products for customers during the level
