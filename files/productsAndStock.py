@@ -2,7 +2,7 @@ from time import sleep
 from random import randrange
 from abc import ABC, abstractmethod
 
-# abstract class as template for consumable and non consumable (template pattern??)
+# abstract class as template for consumable and non consumable (template pattern ?? go ask chatgpt)
 class Product(ABC):
 	@property
 	@abstractmethod
