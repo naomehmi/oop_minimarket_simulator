@@ -76,10 +76,27 @@ class MINIMARKET:
 				break
 			except ValueError:
 				print("=> Press 'p' or 'q'")
-		return interact
+		if interact == 'q': exit()
+		self.gameplay()
+
+	# after player finishes a level
+	def levelUp(self):
+		self.day += 1 # level + 1
+		self.stock.expire() # every consumable product's expiry date -1
+		if self.day in [2, 3, 5, 6, 7, 9]: # if player reaches a certain level, they unlock a new product
+			self.stock.unlocked += 1
+			self.stock.generateProducts(self.stock.unlocked - 1, randrange(6,9))
+			print(f"\nNEW PRODUCT UNLOCKED < {self.stock.shelf[self.stock.unlocked-1][0].name} > ! CHECK YOUR STOCK"), sleep(0.3)
+		self.customersPerShift += 2 if self.day % 2 == 0 else 0 # the amount of customers per level increments by 2 if the level is an even number
+		self.stock.maxCapacity += 2 # the max capacity of each product is increased by 2
+		self.minReward += 5 # minimum value for rewards increments by 5
+		self.maxReward += 5 # maximum value for rewards increments by 5
+		self.player.mistake = 0 # mistakes reset to 0 after every shift
+		print(f"Product max capacity has increased by 2, you can now store up to {self.stock.maxCapacity} items per product"),sleep(0.3)
+		print("Don't forget to restock your items before your next shift starts!"), sleep(1.5)
+		input("\n(PRESS ENTER TO CONTINUE TO THE NEXT DAY...)")
 
 	def gameplay(self):
-		if self.mainMenu() == "q": exit() # if user input q from mainMenu(), program stops
 		# loading screen
 		print("\n{:^74}".format("Loading..."))
 		print("{:^22}".format(" "),end="")
@@ -122,7 +139,6 @@ class MINIMARKET:
 			elif interact == 2:
 				generateCustomers = [Customer() for _ in range(self.customersPerShift)] # customers per shift
 				idx = 1
-				mistake = 0 # player cannot make more than 3 mistakes per level
 				for customer in generateCustomers:
 					if not customer.fillCart(self.stock): # if there are not enough items for customer to add in their cart, player gets fired
 						sleep(0.4)
@@ -131,36 +147,24 @@ class MINIMARKET:
 					print("\nScanning items",end=""), sleep(0.6)
 					for _ in range(3): print(".",end=""), sleep(0.6)
 					print()
-					mistake = self.player.ProcessPayment(customer, self.stock, mistake) # triggers cashier game, returns the amount of mistake the players have
-					if mistake == 3: print(f"=> Ah. You have made 3 mistakes. You're fired, {self.player.name}"), self.stats(3) # fired if mistake = 3, game stops
+					self.player.ProcessPayment(customer, self.stock) # triggers cashier game, returns the amount of mistake the players have
+					if self.player.mistake == 3: print(f"=> Ah. You have made 3 mistakes. You're fired, {self.player.name}"), self.stats(3) # fired if mistake = 3, game stops
 					idx += 1
 					print()
 				yay = randrange(self.minReward, self.maxReward) # reward randomized
 				bon = 0
 				print("Great job! You have done well this shift, here's your reward"), sleep(0.3)
 				print(f"Money Earned today: ${yay}"), sleep(0.3)
-				if mistake == 0: # player gets additional money if they did not make any mistakes
+				if self.player.mistake == 0: # player gets additional money if they did not make any mistakes
 					bon = randrange(20,81)
 					print(f"Bonus (no mistakes during shift) : ${bon}"), sleep(0.3)
 				self.money += yay + bon
 				sleep(2)
-				# LEVEL UP
-				self.day += 1 # level + 1
-				self.stock.expire() # every consumable product's expiry date -1
-				if self.day in [2, 3, 5, 6, 7, 9]: # if player reaches a certain level, they unlock a new product
-					self.stock.unlocked += 1
-					self.stock.generateProducts(self.stock.unlocked - 1, randrange(6,9))
-					print(f"\nNEW PRODUCT UNLOCKED < {self.stock.shelf[self.stock.unlocked-1][0].name} > ! CHECK YOUR STOCK"), sleep(0.3)
-				self.customersPerShift += 2 if self.day % 2 == 0 else 0 # the amount of customers per level increments by 2 if the level is an even number
-				self.stock.maxCapacity += 2 # the max capacity of each product is increased by 2
-				self.minReward += 5 # minimum value for rewards increments by 5
-				self.maxReward += 5 # maximum value for rewards increments by 5
-				print(f"Product max capacity has increased by 2, you can now store up to {self.stock.maxCapacity} items per product"),sleep(0.3)
-				print("Don't forget to restock your items before your next shift starts!"), sleep(1.5)
-				input("\n(PRESS ENTER TO CONTINUE TO THE NEXT DAY...)")
+				self.levelUp()
 			# player quits
 			elif interact == 3:
 				print(f"Aw, well it was nice meeting you, {self.player.name}. Don't come back."), self.stats(4)
+
 	# shows stats of player's progress and the reason why the game is over
 	def stats(self, reason):
 		status = "Resigned" if reason == 4 else "FIRED"
