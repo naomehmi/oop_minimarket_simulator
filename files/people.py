@@ -2,6 +2,7 @@ import math
 from datetime import datetime
 from time import sleep
 from random import randrange
+from abc import ABC, abstractmethod
 
 # customer class
 class Customer:
@@ -42,11 +43,16 @@ class Customer:
 		for i in self.cart:
 			print("{:<10} {:<10} {:<10}".format(i.code, i.name, i.price))
 			sleep(0.3)
-		return ""
+		return ""	
+
+class Task(ABC):
+	@abstractmethod
+	def execute(self):
+		pass
 	
-class InputItems:
-	def inputToSystem(self, customer, stock, mistake):
-		print(f"\nMISTAKES : {mistake} / 3\n") # current mistakes
+class InputItems(Task):
+	def execute(self, customer, stock, player):
+		print(f"\nMISTAKES : {player.mistake} / 3\n") # current mistakes
 		print(customer), sleep(0.6) # print customer cart
 
 		items = {i.name : 0 for i in customer.cart} # this dictionary is to get the quantity of the items in the customer's cart
@@ -74,7 +80,7 @@ class InputItems:
 					"You have already input that product before."
 				] # possible error messages
 				idx = 0
-				if mistake >= 3: return mistake # game over if player makes 3 mistakes
+				if player.mistake >= 3: return # game over if player makes 3 mistakes
 				it = int(input(f"PRODUCT (1 - {stock.unlocked}) : ")) # player input which product is in the customer's cart
 				if not 1 <= it <= stock.unlocked: raise ValueError
 				if allItems[it - 1] not in customerItems: # if the chosen product is not in the customer's cart, mistake + 1
@@ -97,13 +103,13 @@ class InputItems:
 				}) # append the product and its quantity
 				print("Item has been added.\n")
 			except ValueError:
-				mistake += 1
+				player.mistake += 1
 				print("=>",possibleErrors[idx])
-				print(f"=> MISTAKES : {mistake} / 3\n")
-		return [mistake, receipts]
+				print(f"=> MISTAKES : {player.mistake} / 3\n")
+		return receipts
 	
-class PrintReceipt:
-	def printing(self, receipts, player):
+class PrintReceipt(Task):
+	def execute(self, receipts, player):
 		total = 0 # total cost
 		# PRINT RECEIPT
 		print("="*75), sleep(0.03)
@@ -126,8 +132,8 @@ class PrintReceipt:
 		print("="*75)
 		return total
 
-class CashExchange:
-	def giveChange(self, total, mistake):
+class CashExchange(Task):
+	def execute(self, total, player):
 		lowestMultipleOf5 = math.ceil(total / 5) * 5 # round up the total cost to the nearest multiple of 5
 		customerPaid = randrange(lowestMultipleOf5, 10 * ((lowestMultipleOf5 // 10) + 1) + 1, 5) # the customer pays in a randomized amount of dollars between the nearest multiple of 5 up to the nearest multiple of 10
 		print(f"\nCUSTOMER'S CASH : ${customerPaid}\n")
@@ -171,7 +177,7 @@ class CashExchange:
 								for i in range(1,6): print("{:<3} {:<7} | {:<2} {:<12}".format(str(i) + ".", money[i-1]["name"], str(i + 5) + ".", money[i + 5 - 1]["name"]))
 								interact = int(input("=> "))
 								if not 0 <= interact <= 10: raise ValueError("Pick a number between 1-10")
-								if interact == 0 : continue
+								if interact == 0 : break
 								unit = "bills" if interact > 5 else "coins"
 								while True:
 									try:
@@ -218,20 +224,21 @@ class CashExchange:
 							break
 						else: # if wrong, mistake + 1
 							print("\nThe amount of change you have given is incorrect, try again.")
-							mistake += 1
-							print(f"=> MISTAKES : {mistake} / 3")
-							if mistake == 3: return mistake
+							player.mistake += 1
+							print(f"=> MISTAKES : {player.mistake} / 3")
+							if player.mistake == 3: return 
 				except ValueError:
 					print("Input a number between 1-3")
-		return mistake
+		return
 	
 # player
 class Employee:
 	def __init__(self):
 		self.code = "EMPLOYEE"+str(randrange(1000,10000)) # randomized employee code
-		self.input = InputItems()
-		self.cash = CashExchange()
-		self.receipt = PrintReceipt()
+		self.mistake = 0
+		self.task1 = InputItems()
+		self.task2 = PrintReceipt()
+		self.task3 = CashExchange()
 
 	def EmployeeNameCheck(self): # recursive function to validate employee name
 			print("\n\n=> Before we start, what's your name? (Numbers, spaces, and symbols are not allowed)")
@@ -244,12 +251,11 @@ class Employee:
 				return self.EmployeeNameCheck()
 			self.name = name.title()
 	
-	# inputting items, printing receipts, and cash exchange (facade pattern)
-	def ProcessPayment(self, customer, stock, mistake):
-		temp = self.input.inputToSystem(customer,stock,mistake)
-		if isinstance(temp,int): return temp
+	# inputting items, printing receipts, and cash exchange (command / facade pattern ?? go ask chatgpt)
+	def ProcessPayment(self, customer, stock):
+		temp = self.task1.execute(customer,stock, self) # input items that are inside the custoemr's cart
+		if self.mistake >= 3: return
 		else:
-			mistake,receipts = temp
-			total = self.receipt.printing(receipts, self)
-			mistake = self.cash.giveChange(total, mistake)
-		return mistake
+			receipts = temp
+			total = self.task2.execute(receipts, self) # print receipt
+			self.task3.execute(total, self) # cash exchange
