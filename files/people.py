@@ -37,13 +37,12 @@ class Customer:
 		self.cart = sorted(self.cart, key = lambda x : x.name) # sort cart alphabetically
 		return True
 	
-	def __repr__(self): # string representation of customer
+	def printCart(self): # string representation of customer
 		print("Customer's items:")
 		sleep(0.3)
 		for i in self.cart:
-			print("{:<10} {:<10} {:<10}".format(i.code, i.name, i.price))
-			sleep(0.3)
-		return ""	
+			print("{:<10} {:<10} {:<10}".format(i.code, i.name, i.price)), sleep(0.3)
+		print()
 
 # SOLID - Liskov implementation (Task + InputItems + PrintReceipt + CashExchange)
 # template pattern + strategy pattern (with employee)
@@ -60,7 +59,7 @@ class InputItems(Task):
 
 	def execute(self):
 		print(f"\nMISTAKES : {self.player.mistake} / 3\n") # current mistakes
-		print(self.customer), sleep(0.6) # print customer cart
+		self.customer.printCart(), sleep(0.6) # print customer cart
 
 		items = {i.name : 0 for i in self.customer.cart} # this dictionary is to get the quantity of the items in the customer's cart
 		for i in self.customer.cart: items[i.name] += 1
