@@ -1,6 +1,7 @@
 from time import sleep
 from random import randrange
 from abc import ABC, abstractmethod
+from os import system
 
 # abstract class as template for consumable and non consumable (template pattern) + acts as Observer
 class Product(ABC):
@@ -51,7 +52,7 @@ class Stock:
 	_listOfProducts = [[] for _ in range(8)] # the minimarket sells 8 diff products, this is to store the observers
 	maxCapacity = 10 # maximum amount of items per product, will increase as player levels up
 	unlocked = 2 # the types of products that the minimarket sells for now, will increase as player levels up
-	_allProducts = [
+	_ALLPRODUCTS = [
 		{ "con" : 1 ,"code" : "AP", "name" : "APPLE", "price" : 3.00, "uom" : "PCS", "expDate" : "5 days", "cost" : 2.30 }, 
 		{ "con" : 1 ,"code" : "MK", "name" : "MILK", "price" : 3.45, "uom" : "PCS", "expDate" : "6 days", "cost" : 2.95 }, 
 		{ "con" : 1 ,"code" : "EG", "name" : "EGGS", "price" : 7.50, "uom" : "CARTONS", "expDate" : "10 days", "cost" : 6.68 }, 
@@ -63,17 +64,17 @@ class Stock:
 	] # every single product that is sold in the minimarket, acts a template to generate them
 	# the 'con' key is to know whether the product is consumable or not (1 for consumable, 0 for non consumable), and the 'cost' is the price to restock each item of a product 
 
-	# both _listOfProducts and _allProducts are protected attributes, so these property decorators are used so they can be called outside of this class
+	# both _listOfProducts and _ALLPRODUCTS are protected attributes, so these property decorators are used so they can be called outside of this class
 	@property 
 	def shelf(self):
 		return self._listOfProducts
 	@property
 	def products(self):
-		return self._allProducts
+		return self._ALLPRODUCTS
 	
 	# to add items into the stock (add observer)
 	def generateProducts(self, idx, qty):
-		tmp = self._allProducts[idx].copy() # copy the dictionary of the product we want to generate from _listOfProducts
+		tmp = self._ALLPRODUCTS[idx].copy() # copy the dictionary of the product we want to generate from _listOfProducts
 		conOrNon = tmp["con"] # store the value of con (either 0 or 1)
 		# remove con and cost key from the dictionary so making a new consumable/Nonconsumable instance won't cause an error
 		tmp.pop("con")
@@ -121,15 +122,17 @@ class StockControl:
 
 	def displayStock(self, money):
 		while True:
+			system('cls')
 			print("\nMONEY : $" + "%.2f" % money)
 			# table to show the available products that the player has unlocked
+			TABLE = lambda a, b, c, d : print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(a, b, c, d))
 			print("-"*60)
-			print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("No.","Product Name", "Total Stock","Price per Unit (USD)"))
-			print("|{:^3}|{:^15}|{:^12}|{:^25}|".format("-"*3,"-"*15,"-"*12,"-"*25))
+			TABLE("No.","Product Name", "Total Stock","Price per Unit (USD)")
+			TABLE("-"*3,"-"*15,"-"*12,"-"*25)
 			idx = 1
 			for i in range(self.stock.unlocked):
 				prod = self.stock.shelf[i]
-				print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(idx,self.stock.products[i]["name"], str(len(prod)) + " " + self.stock.products[i]["uom"], "%.2f" % self.stock.products[i]["price"]))
+				TABLE(idx,self.stock.products[i]["name"], str(len(prod)) + " " + self.stock.products[i]["uom"], "%.2f" % self.stock.products[i]["price"])
 				idx += 1
 			print("-"*60)
 			print(f"\nPress '0' to go back to the main menu, or press a number between 1-{self.stock.unlocked} to check each item of the product.")
@@ -140,24 +143,31 @@ class StockControl:
 				if interact == 0: return money
 				money = self.restockItems(interact-1, money)
 				if money < 0: return money
-			except ValueError: print(f"Press a number between 1-{self.stock.unlocked}\n")
+			except ValueError: print(f"Press a number between 1-{self.stock.unlocked}\n"), sleep(0.5)
+
+	# format table in restockItems()
+	def printTable(self, con, args):
+		print("|{:^3}|{:^15}|".format(args[0], args[1]),end="")
+		if con: print("{:^15}|".format(args[2]),end="")
+		print("{:^12}|".format(args[3]))
 
 	# this is where the player can buy or discard items of a product
 	def restockItems(self, idx, money):
 		while True:
+			system('cls')
 			prod = self.stock.products[idx] # the dictionary of product we want to add/discard
-			className = "Consumable" if prod["con"] else "NonConsumable" 
-			try: # format table
+			className = bool(prod["con"]) 
+			try: # print table
 				print("\nMONEY : $" + "%.2f" % money) 
 				print("\nProduct :",prod["name"])
 				print("-"*34,end="")
-				if className == "Consumable": print("-"*16,end="")
-				print("\n|{:^3}|{:^15}|".format("No.","Product Code"),end="")
-				if className == "Consumable": print("{:^15}|".format("Expiry Date"),end="")
-				print("{:^12}|".format("Condition"))
-				print("|{:^3}|{:^15}|".format("-"*3,"-"*15),end="")
-				if className == "Consumable": print("{:^15}|".format("-"*15),end="")
-				print("{:^12}|".format("-"*12))
+				if className: print("-"*16,end="")
+				print()
+				TABLEHEADER = [
+					["No.", "Product Code", "Expiry Date" , "Condition"],
+					["-"*i for i in [3, 15, 15, 12]]
+				]
+				for i in TABLEHEADER: self.printTable(className,tuple(i))
 				j = 1
 				prod = self.stock.shelf[idx]
 				amt = len(prod)
@@ -165,19 +175,13 @@ class StockControl:
 				while True: # print items
 					try:
 						i = next(iterator)
-						print("|{:^3}|{:^15}|".format(j,i.code),end="")
-						if className == "Consumable": print("{:^15}|".format(i.expDate),end="")
-						print("{:^12}|".format(i.condition))
+						self.printTable(className, [j, i.code, i.expDate, i.condition])
 						j += 1
 					except StopIteration:
 						break
 				print("-"*34,end="")
-				if className == "Consumable": print("-"*16,end="")
-				print("\nWhat would you like to do?")
-				print("1. Buy more products")
-				print("2. Discard a product")
-				print("3. Go back")
-				print("Pick one (1/2/3)")
+				if className: print("-"*16,end="")
+				print("\nWhat would you like to do?\n1. Buy more products\n2. Discard a product\n3. Go back\nPick one (1/2/3)")
 				sleep(0.03)
 				interact = int(input("=> "))
 				if not 1 <= interact <= 3: raise ValueError
@@ -220,5 +224,5 @@ class StockControl:
 							print(f"Input a number between 1-{amt}\n")
 				elif interact == 3: break
 			except ValueError:
-				print("Press '1', '2', or '3'.")
+				print("Press '1', '2', or '3'."), sleep(0.52)
 		return money
