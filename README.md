@@ -1,6 +1,6 @@
 # oop_minimarket_simulator
 
-status: in progress (80%)
+status: in progress (95%)
 
 ## brief description
 
@@ -44,17 +44,3 @@ for our object oriented programming project, we have made a fun and simple minim
   - the game will end if the player makes 3 mistakes during the level
 - the game ends if the player chooses to resign
 - the player can see their stats once the game is over, they can see how many days they have played, and the reason the game ended
-
-## SOLID implementations
-
-### [x] S - Single Responsibility Principle
-
-- the `Customer` class only handles the responsibilities of a customer
-- the `Task` class and its subclasses `InputItems`, `PrintReceipt`, and `CashExchange` handles specific tasks and represent different responsibilities
-- the `MINIMARKET` class handles the overall simulation, including the day-to-day operations, player interactions, and level progression. Other classes such as `Stock`, `Employee`, etc have specific responsibilities related to their domain
-
-### [x] O - Open/Closed Principle
-
-- ...
-
-readme not done yet
