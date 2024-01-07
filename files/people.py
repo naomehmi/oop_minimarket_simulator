@@ -4,7 +4,7 @@ from time import sleep
 from random import randrange
 from abc import ABC, abstractmethod
 
-# customer class
+# customer class (SOLID - Single Responsibility)
 class Customer:
 	def __init__(self):
 		self.cart = []
@@ -45,27 +45,34 @@ class Customer:
 			sleep(0.3)
 		return ""	
 
+# SOLID - Liskov implementation (Task + InputItems + PrintReceipt + CashExchange)
+# template pattern + strategy pattern (with employee)
 class Task(ABC):
 	@abstractmethod
 	def execute(self):
 		pass
 	
 class InputItems(Task):
-	def execute(self, customer, stock, player):
-		print(f"\nMISTAKES : {player.mistake} / 3\n") # current mistakes
-		print(customer), sleep(0.6) # print customer cart
+	def __init__(self, customer, stock, player):
+		self.customer = customer
+		self.stock = stock
+		self.player = player
 
-		items = {i.name : 0 for i in customer.cart} # this dictionary is to get the quantity of the items in the customer's cart
-		for i in customer.cart: items[i.name] += 1
+	def execute(self):
+		print(f"\nMISTAKES : {self.player.mistake} / 3\n") # current mistakes
+		print(self.customer), sleep(0.6) # print customer cart
 
-		allItems = [stock.products[i]["name"] for i in range(stock.unlocked)] # every product name that the player has unlocked
-		allPrices = [stock.products[i]["price"] for i in range(stock.unlocked)] # every product price that the player has unlocked
+		items = {i.name : 0 for i in self.customer.cart} # this dictionary is to get the quantity of the items in the customer's cart
+		for i in self.customer.cart: items[i.name] += 1
+
+		allItems = [self.stock.products[i]["name"] for i in range(self.stock.unlocked)] # every product name that the player has unlocked
+		allPrices = [self.stock.products[i]["price"] for i in range(self.stock.unlocked)] # every product price that the player has unlocked
 
 		print("="*75),sleep(0.3)
 		print("\n{: ^75}\n".format("NEW PAYMENT"))
 		print("Available Items in minimarket : "), sleep(0.3)
 
-		for i in range(stock.unlocked): print(str(i+1) + ". " + allItems[i]) # print products that the player has unlocked
+		for i in range(self.stock.unlocked): print(str(i+1) + ". " + allItems[i]) # print products that the player has unlocked
 		print()
 		receipts = [] # the products that the player has input into the cashier computer
 
@@ -74,15 +81,15 @@ class InputItems(Task):
 		while len(receipts) != len(customerItems):
 			try:
 				possibleErrors = [
-					f"Please input a number between 1-{stock.unlocked}",
+					f"Please input a number between 1-{self.stock.unlocked}",
 					"The customer does not have that product in their cart",
 					"That is the wrong number of quantity of this item",
 					"You have already input that product before."
 				] # possible error messages
 				idx = 0
-				if player.mistake >= 3: return # game over if player makes 3 mistakes
-				it = int(input(f"PRODUCT (1 - {stock.unlocked}) : ")) # player input which product is in the customer's cart
-				if not 1 <= it <= stock.unlocked: raise ValueError
+				if self.player.mistake >= 3: return # game over if player makes 3 mistakes
+				it = int(input(f"PRODUCT (1 - {self.stock.unlocked}) : ")) # player input which product is in the customer's cart
+				if not 1 <= it <= self.stock.unlocked: raise ValueError
 				if allItems[it - 1] not in customerItems: # if the chosen product is not in the customer's cart, mistake + 1
 					idx = 1
 					raise ValueError
@@ -103,13 +110,17 @@ class InputItems(Task):
 				}) # append the product and its quantity
 				print("Item has been added.\n")
 			except ValueError:
-				player.mistake += 1
+				self.player.mistake += 1
 				print("=>",possibleErrors[idx])
-				print(f"=> MISTAKES : {player.mistake} / 3\n")
+				print(f"=> MISTAKES : {self.player.mistake} / 3\n")
 		return receipts
 	
 class PrintReceipt(Task):
-	def execute(self, receipts, player):
+	def __init__(self, receipts, player):
+		self.receipts = receipts
+		self.player = player
+
+	def execute(self):
 		total = 0 # total cost
 		# PRINT RECEIPT
 		print("="*75), sleep(0.03)
@@ -118,30 +129,34 @@ class PrintReceipt(Task):
 		print("|{:^73}|".format(" ")), sleep(0.03)
 		print("|{:^73}|".format(datetime.now().strftime("%c"))), sleep(0.03)
 		print("|{:^73}|".format(" ")), sleep(0.03)
-		print("|{:^73}|".format(f"Cashier : {player.code} - {player.name}")), sleep(0.03)
+		print("|{:^73}|".format(f"Cashier : {self.player.code} - {self.player.name}")), sleep(0.03)
 		print("|{:^73}|".format(" ")), sleep(0.03)
-		for i in receipts:
+		for i in self.receipts:
 			for x, y in i.items():
 				total += y["qt"] * y["pr"]
-				print("|{:<10}{:<25}{:17} x ${:<4}{:>13}|".format(" ", x, y["qt"], "%.2f" % y["pr"] ," ")), sleep(0.03)
+				print("|{:<10}{:<25}{:17} x ${:<5}{:>12}|".format(" ", x, y["qt"], "%.2f" % y["pr"] ," ")), sleep(0.03)
 		print("|{:^73}|".format(" ")), sleep(0.03)
 		print("|{:<10}{:<52}+{:>10}|".format(" ", "="*50, " ")), sleep(0.03)
 		print("|{:^73}|".format(" ")), sleep(0.03)
-		print("|{:<10}{:<7} : {:>40}{:>13}|".format(" ", "TOTAL", "$" + str("%.2f" % total), " ")), sleep(0.03)
+		print("|{:<10}{:<7} : {:>41}{:>12}|".format(" ", "TOTAL", "$" + str("%.2f" % total), " ")), sleep(0.03)
 		print("|{:^73}|".format(" ")), sleep(0.03)
 		print("="*75)
 		return total
 
 class CashExchange(Task):
-	def execute(self, total, player):
-		lowestMultipleOf5 = math.ceil(total / 5) * 5 # round up the total cost to the nearest multiple of 5
+	def __init__(self, total, player):
+		self.total = total
+		self.player = player
+
+	def execute(self):
+		lowestMultipleOf5 = math.ceil(self.total / 5) * 5 # round up the total cost to the nearest multiple of 5
 		customerPaid = randrange(lowestMultipleOf5, 10 * ((lowestMultipleOf5 // 10) + 1) + 1, 5) # the customer pays in a randomized amount of dollars between the nearest multiple of 5 up to the nearest multiple of 10
 		print(f"\nCUSTOMER'S CASH : ${customerPaid}\n")
-		if "%.2f" % customerPaid == "%.2f" % total: # if customer pays the exact amount of money
+		if "%.2f" % customerPaid == "%.2f" % self.total: # if customer pays the exact amount of money
 			print("Oh, the customer has paid the exact amount, so no change needed.")
 		else:
 			print("Give the customer the correct amount of change to finish the payment.")
-			changeNeeded = (customerPaid - total) # change
+			changeNeeded = (customerPaid - self.total) # change
 			taken = 0.00 # change taken from the cash register
 			cashInHand = []
 			money = [ # all the money in the cash register
@@ -224,21 +239,20 @@ class CashExchange(Task):
 							break
 						else: # if wrong, mistake + 1
 							print("\nThe amount of change you have given is incorrect, try again.")
-							player.mistake += 1
-							print(f"=> MISTAKES : {player.mistake} / 3")
-							if player.mistake == 3: return 
+							self.player.mistake += 1
+							print(f"=> MISTAKES : {self.player.mistake} / 3")
+							if self.player.mistake == 3: return 
 				except ValueError:
 					print("Input a number between 1-3")
 		return
+
+# InputItems + PrintReceipt + CashExchange => Each implements Single Responsibility Principle because they have their own task
 	
 # player
 class Employee:
 	def __init__(self):
 		self.code = "EMPLOYEE"+str(randrange(1000,10000)) # randomized employee code
 		self.mistake = 0
-		self.task1 = InputItems()
-		self.task2 = PrintReceipt()
-		self.task3 = CashExchange()
 
 	def EmployeeNameCheck(self): # recursive function to validate employee name
 			print("\n\n=> Before we start, what's your name? (Numbers, spaces, and symbols are not allowed)")
@@ -251,11 +265,11 @@ class Employee:
 				return self.EmployeeNameCheck()
 			self.name = name.title()
 	
-	# inputting items, printing receipts, and cash exchange (command / facade pattern ?? go ask chatgpt)
+	# inputting items, printing receipts, and cash exchange
 	def ProcessPayment(self, customer, stock):
-		temp = self.task1.execute(customer,stock, self) # input items that are inside the custoemr's cart
+		temp = InputItems(customer, stock, self).execute() # input items that are inside the custoemr's cart
 		if self.mistake >= 3: return
 		else:
 			receipts = temp
-			total = self.task2.execute(receipts, self) # print receipt
-			self.task3.execute(total, self) # cash exchange
+			total = PrintReceipt(receipts,self).execute() # print receipt
+			CashExchange(total,self).execute() # cash exchange
