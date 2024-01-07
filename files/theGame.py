@@ -13,6 +13,7 @@ class MINIMARKET:
 		self.customersPerShift = 2 # the amount of customers per level
 		self.stock = Stock() # stock of the entire minimarket
 		self.player = Employee() # player
+		self.StockControl = StockControl(self.stock) # interface to control minimarket inventory
 		self.minReward = 80 # the lowest possible value for a reward after completing a shift
 		self.maxReward = 151 # the highest possible value for a reward after completing a shift
 		
@@ -133,7 +134,7 @@ class MINIMARKET:
 			print()
 			# check stock
 			if interact == 1:
-				self.money = self.stock.displayStock(self.money)  # check stock, returns money. if money < 0 game over
+				self.money = self.StockControl.displayStock(self.money)  # check stock, returns money. if money < 0 game over
 				if self.money < 0: print("\nYou have wasted all of our money. You're fired >:("), self.stats(1)
 			# shift starts and customers come in
 			elif interact == 2:
