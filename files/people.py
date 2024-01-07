@@ -266,7 +266,7 @@ class Employee:
 	
 	# inputting items, printing receipts, and cash exchange
 	def ProcessPayment(self, customer, stock):
-		temp = InputItems(customer, stock, self).execute() # input items that are inside the custoemr's cart
+		temp = InputItems(customer, stock, self).execute() # input items that are inside the customer's cart
 		if self.mistake >= 3: return
 		else:
 			receipts = temp
