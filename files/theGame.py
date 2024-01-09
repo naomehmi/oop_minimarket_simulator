@@ -15,7 +15,6 @@ class MINIMARKET:
 		self.customersPerShift = 2 # the amount of customers per level
 		self.stock = Stock() # stock of the entire minimarket
 		self.player = Employee() # player
-		self.StockControl = StockControl(self.stock) # interface to control minimarket inventory
 		self.minReward = 80 # the lowest possible value for a reward after completing a shift
 		self.maxReward = 151 # the highest possible value for a reward after completing a shift
 		
@@ -129,8 +128,8 @@ class MINIMARKET:
 		input("\n(PRESS ENTER TO CONTINUE TO THE NEXT DAY...)")
 
 	def checkStock(self):
-		self.money = self.StockControl.displayStock(self.money)  # check stock, returns money. if money < 0 game over
-		if self.money < 0: print("\nYou have wasted all of our money. You're fired >:("), self.stats(1)
+		self.money = DisplayStock(self.stock, self.money).execute()  # check stock, returns money. if money < 0 game over
+		if self.money < 0: print("\nYou have wasted all of our money. You're fired >:("),sleep(1), self.stats(1)
 
 	def startShift(self):
 		generateCustomers = [Customer() for _ in range(self.customersPerShift)] # customers per shift
@@ -138,7 +137,7 @@ class MINIMARKET:
 		for customer in generateCustomers:
 			if not customer.fillCart(self.stock): # if there are not enough items for customer to add in their cart, player gets fired
 				sleep(0.4)
-				print("Uh oh, it seems there are not enough products for the customers, you're fired >:("), self.stats(2)
+				print("Uh oh, it seems there are not enough products for the customers, you're fired >:("), sleep(1.2), self.stats(2)
 			system('cls')
 			print(f"Customer {idx} out of {self.customersPerShift}")
 			print("\nScanning items",end=""), sleep(0.6)
@@ -182,7 +181,7 @@ class MINIMARKET:
 			# shift starts and customers come in
 			elif interact == 2: self.startShift(), self.levelUp()
 			# player quits
-			elif interact == 3: print(f"Aw, well it was nice meeting you, {self.player.name}. Don't come back."), self.stats(4)
+			elif interact == 3: print(f"Aw, well it was nice meeting you, {self.player.name}. Don't come back."), sleep(1), self.stats(4)
 
 	# shows stats of player's progress and the reason why the game is over
 	def stats(self, reason):
