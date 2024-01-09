@@ -115,24 +115,36 @@ class Stock:
 			except StopIteration:
 				break
 
-# SOLID - Open/Closed Principle + Liskov Substitution Principle + Dependency Inversion (karena bergantung sm class product(abstract))
-class StockControl:
-	def __init__(self, stock):
-		self.stock = stock
+class StockControl(ABC):
+	@abstractmethod
+	def formatTable(self, *args):
+		pass
 
-	def displayStock(self, money):
+	@abstractmethod
+	def execute(self):
+		pass
+
+class DisplayStock(StockControl):
+	def __init__(self, stock, money):
+		self.stock = stock
+		self.money = money
+
+	def formatTable(self, *args):
+		a, b, c, d = map(str, list(args))
+		print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(a, b, c, d))
+
+	def execute(self):
 		while True:
 			system('cls')
-			print("\nMONEY : $" + "%.2f" % money)
+			print("\nMONEY : $" + "%.2f" % self.money)
 			# table to show the available products that the player has unlocked
-			TABLE = lambda a, b, c, d : print("|{:^3}|{:^15}|{:^12}|{:^25}|".format(a, b, c, d))
 			print("-"*60)
-			TABLE("No.","Product Name", "Total Stock","Price per Unit (USD)")
-			TABLE("-"*3,"-"*15,"-"*12,"-"*25)
+			self.formatTable("No.","Product Name", "Total Stock","Price per Unit (USD)")
+			self.formatTable("-"*3,"-"*15,"-"*12,"-"*25)
 			idx = 1
 			for i in range(self.stock.unlocked):
 				prod = self.stock.shelf[i]
-				TABLE(idx,self.stock.products[i]["name"], str(len(prod)) + " " + self.stock.products[i]["uom"], "%.2f" % self.stock.products[i]["price"])
+				self.formatTable(idx,self.stock.products[i]["name"], str(len(prod)) + " " + self.stock.products[i]["uom"], "%.2f" % self.stock.products[i]["price"])
 				idx += 1
 			print("-"*60)
 			print(f"\nPress '0' to go back to the main menu, or press a number between 1-{self.stock.unlocked} to check each item of the product.")
@@ -140,25 +152,30 @@ class StockControl:
 			try:
 				interact = int(input("=> "))
 				if not 0 <= interact <= self.stock.unlocked: raise ValueError
-				if interact == 0: return money
-				money = self.restockItems(interact-1, money)
-				if money < 0: return money
+				if interact == 0: return self.money
+				self.money = RestockItems(self.stock, self.money, interact-1).execute()
+				if self.money < 0: return self.money
 			except ValueError: print(f"Press a number between 1-{self.stock.unlocked}\n"), sleep(0.5)
 
-	# format table in restockItems()
-	def printTable(self, con, args):
-		print("|{:^3}|{:^15}|".format(args[0], args[1]),end="")
-		if con: print("{:^15}|".format(args[2]),end="")
-		print("{:^12}|".format(args[3]))
+class RestockItems(StockControl):
+	def __init__(self, stock, money, idx):
+		self.stock = stock
+		self.money = money
+		self.idx = idx
 
-	# this is where the player can buy or discard items of a product
-	def restockItems(self, idx, money):
+	def formatTable(self, *args):
+		con, text = list(args)
+		print("|{:^3}|{:^15}|".format(text[0], text[1]),end="")
+		if con: print("{:^15}|".format(text[2]),end="")
+		print("{:^12}|".format(text[3]))
+
+	def execute(self):
 		while True:
 			system('cls')
-			prod = self.stock.products[idx] # the dictionary of product we want to add/discard
+			prod = self.stock.products[self.idx] # the dictionary of product we want to add/discard
 			className = bool(prod["con"]) 
 			try: # print table
-				print("\nMONEY : $" + "%.2f" % money) 
+				print("\nMONEY : $" + "%.2f" % self.money) 
 				print("\nProduct :",prod["name"])
 				print("-"*34,end="")
 				if className: print("-"*16,end="")
@@ -167,15 +184,15 @@ class StockControl:
 					["No.", "Product Code", "Expiry Date" , "Condition"],
 					["-"*i for i in [3, 15, 15, 12]]
 				]
-				for i in TABLEHEADER: self.printTable(className,tuple(i))
+				for i in TABLEHEADER: self.formatTable(className,i)
 				j = 1
-				prod = self.stock.shelf[idx]
+				prod = self.stock.shelf[self.idx]
 				amt = len(prod)
 				iterator = iter(prod)
 				while True: # print items
 					try:
 						i = next(iterator)
-						self.printTable(className, [j, i.code, i.expDate, i.condition])
+						self.formatTable(className, [j, i.code, i.expDate, i.condition])
 						j += 1
 					except StopIteration:
 						break
@@ -194,22 +211,22 @@ class StockControl:
 						err = "Please input a number more than 0." # default error message
 						try:
 							print(f"Quantity : {amt}\nCurrent max capacity : {self.stock.maxCapacity}") # quantity of items to buy
-							print(f"Cost to Buy : ${'%.2f' % self.stock.products[idx]['cost']}/{self.stock.products[idx]['uom']}")
+							print(f"Cost to Buy : ${'%.2f' % self.stock.products[self.idx]['cost']}/{self.stock.products[self.idx]['uom']}")
 							print("\nHow many products do you want to add?")
 							qty = int(input("=> "))
 							if qty > self.stock.maxCapacity - amt: # cannot buy more than max capacity
 								err = f"You can only buy up to {self.stock.maxCapacity - amt} for now" # change error message
 								raise ValueError
-							cost = self.stock.products[idx]["cost"] * qty
-							money -= cost # money is subtracted by cost of items
-							self.stock.generateProducts(idx, qty) # add the items into the stock
+							cost = self.stock.products[self.idx]["cost"] * qty
+							self.money -= cost # money is subtracted by cost of items
+							self.stock.generateProducts(self.idx, qty) # add the items into the stock
 							print(f"(-${'%.2f' % cost})\n\n=> {qty} product(s) have been added."), sleep(0.8)
 							break
 						except ValueError:
 							print(err + "\n")
 				elif interact == 2: # discard product
 					if amt == 0: # if there are 0 items of this product, go back to previous menu
-						print("There are no products to discard. I think you should buy more instead"), sleep(0.6)
+						print("There are no products to discard. I think you should buy more instead"), sleep(0.9)
 						continue
 					while True:
 						try: # pick row of item to be discarded
@@ -218,11 +235,13 @@ class StockControl:
 							if not 0 <= row <= amt: raise ValueError
 							if row == 0: break
 							print(f"Product {prod[row-1].code} has been discarded."), sleep(0.8)
-							self.stock.removeProducts(idx, row-1)
+							self.stock.removeProducts(self.idx, row-1)
 							break
 						except ValueError:
 							print(f"Input a number between 1-{amt}\n")
 				elif interact == 3: break
 			except ValueError:
 				print("Press '1', '2', or '3'."), sleep(0.52)
-		return money
+		return self.money
+
+# SOLID - Open/Closed Principle + Liskov Substitution Principle + Dependency Inversion (karena bergantung sm class product(abstract)
