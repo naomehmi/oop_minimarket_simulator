@@ -238,7 +238,7 @@ class CashExchange(Task):
 					# hand customer the change
 					elif action == 3:
 						if '%.2f' % self.taken == '%.2f' % self.changeNeeded: # if the returned change is correct, customer interaction is completed
-							print("\nThe amount of change you have returned is correct.\nThe customer has left the minimarket."), sleep(1)
+							print("\nThe amount of change you have returned is correct.\nThe customer has left the minimarket."), sleep(3.2)
 							break
 						else: # if wrong, mistake + 1
 							print("\nThe amount of change you have given is incorrect, try again.")
