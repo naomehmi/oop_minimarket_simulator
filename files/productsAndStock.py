@@ -226,7 +226,7 @@ class RestockItems(StockControl):
 							print(err + "\n")
 				elif interact == 2: # discard product
 					if amt == 0: # if there are 0 items of this product, go back to previous menu
-						print("There are no products to discard. I think you should buy more instead"), sleep(0.9)
+						print("There are no products to discard. I think you should buy more instead"), sleep(1)
 						continue
 					while True:
 						try: # pick row of item to be discarded
