@@ -1,6 +1,6 @@
 # oop_minimarket_simulator
 
-status: in progress (95%)
+status: completed (100%)
 
 ## brief description
 
