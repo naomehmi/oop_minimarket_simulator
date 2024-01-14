@@ -245,6 +245,7 @@ class CashExchange(Task):
 							self.player.mistake += 1
 							print(f"=> MISTAKES : {self.player.mistake} / 3")
 							if self.player.mistake == 3: return 
+							sleep(2.7)
 					system('cls')
 				except ValueError: print("Input a number between 1-3")
 
