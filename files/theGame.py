@@ -11,7 +11,7 @@ class MINIMARKET:
 	# facade pattern
 	def __init__(self):
 		self.day = 1 # level
-		self.money = 100 # starter money
+		self.money = 100.00 # starter money
 		self.customersPerShift = 2 # the amount of customers per level
 		self.stock = Stock() # stock of the entire minimarket
 		self.player = Employee() # player
