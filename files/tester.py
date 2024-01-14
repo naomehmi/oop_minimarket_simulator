@@ -12,13 +12,14 @@ class Testing(unittest.TestCase):
   
   def testQuantity(self):
     """checking whether the quantity of the generated product is correct"""
-    self.sampleStock().generateProducts(5, 6)
-    self.assertEqual(len(self.s.shelf[5]),6)
+    s = self.sampleStock()
+    s.generateProducts(5, 6)
+    self.assertEqual(len(s.shelf[5]),6)
 
   def testCondition(self):
     """checking whether every product in customer's cart is in 'GOOD' condition"""
     c = Customer()
     c.fillCart(self.sampleStock())
-    for i in c.cart:
+    for i in c.getCustItems:
       with self.subTest("Condition",i=i):
         self.assertEqual(i.condition,"GOOD")
